@@ -2,52 +2,59 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import altair as alt
 
 # ==========================
 # CONFIGURAÇÕES INICIAIS
 # ==========================
 st.set_page_config(page_title="Painel ENEM - Governo do Brasil", layout="wide")
 st.title("📊 Painel Interativo ENEM - Governo Federal")
-st.markdown("Este painel apresenta uma análise dos microdados do ENEM de forma interativa, acessível e informativa para a sociedade.")
+st.markdown(
+    "Este painel apresenta uma análise dos microdados do ENEM de forma interativa, acessível e informativa para a sociedade.",
+)
 
 # ==========================
 # LEITURA DOS DADOS
 # ==========================
 @st.cache_data
 def carregar_dados():
-    return pd.read_csv("microdados_enem.csv", sep=",")
+    df = pd.read_csv("microdados_enem.csv", sep=",")
+    df.rename(columns={
+        "TP_SEXO": "Sexo",
+        "TP_COR_RACA": "Cor_Raca",
+        "SG_UF_ESC": "UF_Escola",
+        "NU_NOTA_CN": "Nota_Ciencias_Natureza",
+        "NU_NOTA_CH": "Nota_Ciencias_Humanas",
+        "NU_NOTA_LC": "Nota_Linguagens",
+        "NU_NOTA_MT": "Nota_Matematica",
+        "NU_NOTA_REDACAO": "Nota_Redacao",
+        "Q006": "Renda_Familiar"
+    }, inplace=True)
+    return df
 
 df = carregar_dados()
 
 # ==========================
-# RENOMEANDO PARA MAIOR CLAREZA
-# ==========================
-df.rename(columns={
-    "TP_SEXO": "Sexo",
-    "TP_COR_RACA": "Cor_Raca",
-    "SG_UF_ESC": "UF_Escola",
-    "NU_NOTA_CN": "Nota_Ciencias_Natureza",
-    "NU_NOTA_CH": "Nota_Ciencias_Humanas",
-    "NU_NOTA_LC": "Nota_Linguagens",
-    "NU_NOTA_MT": "Nota_Matematica",
-    "NU_NOTA_REDACAO": "Nota_Redacao",
-    "Q006": "Renda_Familiar"
-}, inplace=True)
-
-# ==========================
-# FILTROS
+# SIDEBAR DE FILTROS
 # ==========================
 st.sidebar.header("Filtros")
 ufs = df["UF_Escola"].dropna().unique()
 uf_sel = st.sidebar.selectbox("UF da Escola", options=sorted(ufs), index=0)
-
 sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
-cor_sel = st.sidebar.multiselect("Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()), default=df["Cor_Raca"].dropna().unique())
+cor_sel = st.sidebar.multiselect(
+    "Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()),
+    default=df["Cor_Raca"].dropna().unique()
+)
+renda_sel = st.sidebar.multiselect(
+    "Faixa de Renda Familiar", options=sorted(df["Renda_Familiar"].dropna().unique()),
+    default=sorted(df["Renda_Familiar"].dropna().unique())
+)
 
-df_filtros = df[
+df_filtrado = df[
     (df["UF_Escola"] == uf_sel) &
     (df["Sexo"].isin(sexo_sel)) &
-    (df["Cor_Raca"].isin(cor_sel))
+    (df["Cor_Raca"].isin(cor_sel)) &
+    (df["Renda_Familiar"].isin(renda_sel))
 ]
 
 with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
@@ -57,51 +64,104 @@ with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
     **Q006 - Renda Familiar:**
     - A: Nenhuma renda
     - B: Até *R$* 998,00
-    - C: De *R$ 998,01 até *R$* 1.497,00
-    - D	De *R$* 1.431,01 até *R$* 1.908,00.
-    - E	De *R$* 1.908,01 até *R$* 2.385,00.
-    - F	De *R$* 2.385,01 até *R$* 2.862,00.
-    - G	De *R$* 2.862,01 até *R$* 3.816,00.
-    - H	De *R$* 3.816,01 até *R$* 4.770,00.
-    - I	De *R$* 4.770,01 até *R$* 5.724,00.
-    - J	De *R$* 5.724,01 até *R$* 6.678,00.
-    - K	De *R$* 6.678,01 até *R$* 7.632,00.
-    - L	De *R$* 7.632,01 até *R$* 8.586,00.
-    - M	De *R$* 8.586,01 até *R$* 9.540,00.
-    - N	De *R$* 9.540,01 até *R$* 11.448,00.
-    - O	De *R$* 11.448,01 até *R$* 14.310,00.
-    - P	De *R$* 14.310,01 até *R$* 19.080,00.
+    - C: De *R$* 998,01 até *R$* 1.497,00
+    - D: De *R$* 1.431,01 até *R$* 1.908,00.
+    - E: De *R$* 1.908,01 até *R$* 2.385,00.
+    - F: De *R$* 2.385,01 até *R$* 2.862,00.
+    - G: De *R$* 2.862,01 até *R$* 3.816,00.
+    - H: De *R$* 3.816,01 até *R$* 4.770,00.
+    - I: De *R$* 4.770,01 até *R$* 5.724,00.
+    - J: De *R$* 5.724,01 até *R$* 6.678,00.
+    - K: De *R$* 6.678,01 até *R$* 7.632,00.
+    - L: De *R$* 7.632,01 até *R$* 8.586,00.
+    - M: De *R$* 8.586,01 até *R$* 9.540,00.
+    - N: De *R$* 9.540,01 até *R$* 11.448,00.
+    - O: De *R$* 11.448,01 até *R$* 14.310,00.
+    - P: De *R$* 14.310,01 até *R$* 19.080,00.
     - Q: Acima de *R$* 9.600,01
     """)
 
-st.markdown("## 🧮 Médias das Notas por Disciplina")
-medias = df_filtros[["Nota_Ciencias_Natureza", "Nota_Ciencias_Humanas", "Nota_Linguagens", "Nota_Matematica", "Nota_Redacao"]].mean()
-st.bar_chart(medias)
-
 # ==========================
-# DISTRIBUIÇÃO POR SEXO
+# GRÁFICO 1: Disparidade de Nota por Renda (Boxplot)
 # ==========================
-st.markdown("## 📈 Distribuição de Notas por Sexo")
-disciplina = st.selectbox("Selecione a disciplina:", [
-    "Nota_Ciencias_Natureza", "Nota_Ciencias_Humanas",
-    "Nota_Linguagens", "Nota_Matematica", "Nota_Redacao"
-])
-
+st.markdown("## 💰 Disparidade de Notas por Faixa de Renda")
 plt.figure(figsize=(10, 5))
-sns.histplot(data=df_filtros, x=disciplina, hue="Sexo", kde=True, bins=30)
-plt.title(f"Distribuição das Notas em {disciplina}", fontsize=16)
+sns.boxplot(
+    data=df_filtrado,
+    x="Renda_Familiar",
+    y="Nota_Matematica",
+    order=sorted(df_filtrado["Renda_Familiar"].unique())
+)
+plt.xticks(rotation=45)
+plt.xlabel("Faixa de Renda Familiar")
+plt.ylabel("Nota de Matemática")
+plt.title("Distribuição das Notas de Matemática por Faixa de Renda")
 st.pyplot(plt.gcf())
 plt.clf()
 
+st.markdown(
+    "**Análise:** Observa-se que, em média, alunos de faixas de renda mais altas tendem a obter notas superiores em Matemática. \n"
+    "Essa disparidade evidencia desafios de acesso a recursos educacionais e desigualdade socioeconômica."
+)
+
 # ==========================
-# GRÁFICO DE RENDA VS NOTA
+# GRÁFICO 2: Renda vs Redação (Scatter interativo Altair)
 # ==========================
-st.markdown("## 💰 Renda Familiar e Desempenho")
-renda_vs_nota = df_filtros.groupby("Renda_Familiar")[disciplina].mean().sort_values()
-plt.figure(figsize=(10, 5))
-renda_vs_nota.plot(kind='bar', color='green')
-plt.title(f'Média de {disciplina} por Faixa de Renda Familiar')
-plt.xlabel('Faixa de Renda (Q006)')
-plt.ylabel('Nota Média')
+st.markdown("## 📈 Renda Familiar vs Nota de Redação")
+select = alt.selection_interval(encodings=['x', 'y'])
+chart = alt.Chart(df_filtrado).mark_circle(size=60).encode(
+    x=alt.X('Renda_Familiar:N', title='Faixa de Renda'),
+    y=alt.Y('Nota_Redacao:Q', title='Nota de Redação'),
+    color='Cor_Raca:N',
+    tooltip=['Sexo', 'Cor_Raca', 'Nota_Redacao', 'Renda_Familiar']
+).properties(width=700, height=400).add_selection(select)
+st.altair_chart(chart, use_container_width=True)
+
+st.markdown(
+    "**Análise:** Cada ponto representa um participante do ENEM. A tendência mostra que faixas de renda mais elevadas concentram notas de redação maiores, sugerindo influência de suporte e recursos externos na preparação."
+)
+
+# ==========================
+# GRÁFICO 3: Notas por Cor/Raça (Violin plot)
+# ==========================
+st.markdown("## 🎨 Distribuição de Notas de Linguagens por Cor/Raça")
+plt.figure(figsize=(10,5))
+sns.violinplot(
+    data=df_filtrado,
+    x="Cor_Raca",
+    y="Nota_Linguagens",
+    order=sorted(df_filtrado["Cor_Raca"].unique())
+)
+plt.xlabel("Cor/Raça")
+plt.ylabel("Nota de Linguagens")
+plt.title("Distribuição de Notas de Linguagens por Cor/Raça")
 st.pyplot(plt.gcf())
 plt.clf()
+
+st.markdown(
+    "**Análise:** As diferenças nas distribuições indicam que estudantes autodeclarados pretos e pardos enfrentam maiores desafios, possivelmente refletindo desigualdades históricas no acesso a uma educação de qualidade."
+)
+
+# ==========================
+# GRÁFICO 4: Média de Notas por Estado (Mapa interativo)
+# ==========================
+st.markdown("## 📍 Média das Notas de Ciências Humanas por UF")
+media_uf = (
+    df_filtrado.groupby('UF_Escola')['Nota_Ciencias_Humanas']
+    .mean()
+    .reset_index()
+    .rename(columns={'Nota_Ciencias_Humanas': 'Media_CH'})
+)
+
+# Mapa usando Altair (requere topojson externo caso disponível)
+# Aqui, demonstração simplificada:
+chart_uf = alt.Chart(media_uf).mark_bar().encode(
+    x='UF_Escola:N',
+    y='Media_CH:Q',
+    tooltip=['UF_Escola', 'Media_CH']
+).properties(width=700, height=400)
+st.altair_chart(chart_uf, use_container_width=True)
+
+st.markdown(
+    "**Análise:** Estados apresentam variações na média de Ciências Humanas. Identificar regiões com desempenho abaixo da média pode orientar políticas de reforço e investimentos direcionados."
+)
