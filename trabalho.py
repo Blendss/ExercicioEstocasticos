@@ -42,12 +42,11 @@ st.sidebar.header("Filtros")
 ufs = df["UF_Escola"].dropna().unique()
 ufs = sorted(ufs)
 ufs.insert(0, 'Todos')
-uf_selecionada = st.sidebar.selectbox("Selecione a UF da escola", ufs)
-if uf_selecionada != "Todos":
-    df_filtrado = df[df['SG_UF_ESC'] == uf_selecionada]
+uf_sel = st.sidebar.selectbox("Selecione a UF da escola", ufs)
+if uf_sel != "Todos":
+    df_filtrado = df[df['UF_Escola'] == uf_sel]
 else:
     df_filtrado = df
-uf_sel = st.sidebar.selectbox("UF da Escola", options=sorted(ufs), index=0)
 sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
 cor_sel = st.sidebar.multiselect(
     "Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()),
