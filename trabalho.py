@@ -94,7 +94,7 @@ with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
 
     **Q006 - Renda Familiar:**
     - A: Nenhuma renda
-    - B: Até 'R$' 998,00
+    - B: Até *R$* 998,00
     - C: De R$ 998,01 até R$ 1.497,00
     - D	De R$ 1.431,01 até R$ 1.908,00.
     - E	De R$ 1.908,01 até R$ 2.385,00.
