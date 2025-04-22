@@ -38,15 +38,13 @@ df = carregar_dados()
 # SIDEBAR DE FILTROS
 # ==========================
 st.sidebar.header("Filtros")
+
 # Obter a lista única de UFs
 ufs = df["UF_Escola"].dropna().unique()
 ufs = sorted(ufs)
 ufs.insert(0, 'Todos')
+
 uf_sel = st.sidebar.selectbox("Selecione a UF da escola", ufs)
-if uf_sel != "Todos":
-    df_filtrado = df[df['UF_Escola'] == uf_sel]
-else:
-    df_filtrado = df
 sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
 cor_sel = st.sidebar.multiselect(
     "Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()),
@@ -57,11 +55,16 @@ renda_sel = st.sidebar.multiselect(
     default=sorted(df["Renda_Familiar"].dropna().unique())
 )
 
-df_filtrado = df[
-    (df["UF_Escola"] == uf_sel) &
-    (df["Sexo"].isin(sexo_sel)) &
-    (df["Cor_Raca"].isin(cor_sel)) &
-    (df["Renda_Familiar"].isin(renda_sel))
+# Filtros
+df_filtrado = df.copy()
+
+if uf_sel != "Todos":
+    df_filtrado = df_filtrado[df_filtrado["UF_Escola"] == uf_sel]
+
+df_filtrado = df_filtrado[
+    (df_filtrado["Sexo"].isin(sexo_sel)) &
+    (df_filtrado["Cor_Raca"].isin(cor_sel)) &
+    (df_filtrado["Renda_Familiar"].isin(renda_sel))
 ]
 
 with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
