@@ -38,8 +38,19 @@ df = carregar_dados()
 # SIDEBAR DE FILTROS
 # ==========================
 st.sidebar.header("Filtros")
-ufs = df["UF_Escola"].dropna().unique()
-uf_sel = st.sidebar.selectbox("UF da Escola", options=sorted(ufs), index=0)
+# Obter a lista única de UFs
+ufs = df['SG_UF_ESC'].dropna().unique()
+ufs = sorted(ufs)
+ufs.insert(0, 'Todos')  # Adiciona a opção "Todos" no topo
+
+# Filtro no sidebar
+uf_selecionada = st.sidebar.selectbox("Selecione a UF da escola", ufs)
+
+# Aplicar filtro (se não for "Todos")
+if uf_selecionada != "Todos":
+    df_filtrado = df[df['SG_UF_ESC'] == uf_selecionada]
+else:
+    df_filtrado = df  # usa o dataframe completo
 sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
 cor_sel = st.sidebar.multiselect(
     "Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()),
