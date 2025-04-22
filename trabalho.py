@@ -143,25 +143,44 @@ st.markdown(
 )
 
 # ==========================
-# GRÁFICO 4: Média de Notas por Estado (Mapa interativo)
+# GRÁFICO 4: Média de Notas por Estado com Seletor de Matéria
 # ==========================
-st.markdown("## 📍 Média das Notas de Ciências Humanas por UF")
+st.markdown("## 📍 Média das Notas por UF")
+
+# Seletor de matéria (para este gráfico apenas)
+materia_opcao = st.selectbox(
+    "Escolha a matéria:",
+    options=[
+        "Nota_Matematica",
+        "Nota_Linguagens",
+        "Nota_Ciencias_Humanas",
+        "Nota_Ciencias_Natureza",
+        "Nota_Redacao"
+    ],
+    format_func=lambda x: x.replace("Nota_", "").replace("_", " ")
+)
+
+# Agrupamento por UF com base na matéria escolhida
 media_uf = (
-    df_filtrado.groupby('UF_Escola')['Nota_Ciencias_Humanas']
+    df_filtrado.groupby('UF_Escola')[materia_opcao]
     .mean()
     .reset_index()
-    .rename(columns={'Nota_Ciencias_Humanas': 'Media_CH'})
+    .rename(columns={materia_opcao: 'Media_Nota'})
 )
 
-# Mapa usando Altair (requere topojson externo caso disponível)
-# Aqui, demonstração simplificada:
+# Gráfico de barras
 chart_uf = alt.Chart(media_uf).mark_bar().encode(
-    x='UF_Escola:N',
-    y='Media_CH:Q',
-    tooltip=['UF_Escola', 'Media_CH']
+    x=alt.X('UF_Escola:N', sort='-y'),
+    y=alt.Y('Media_Nota:Q', title=f'Média - {materia_opcao.replace("Nota_", "").replace("_", " ")}'),
+    tooltip=['UF_Escola', 'Media_Nota']
 ).properties(width=700, height=400)
+
 st.altair_chart(chart_uf, use_container_width=True)
 
-st.markdown(
-    "**Análise:** Estados apresentam variações na média de Ciências Humanas. Identificar regiões com desempenho abaixo da média pode orientar políticas de reforço e investimentos direcionados."
-)
+# Texto explicativo
+st.markdown(f"""
+**Análise:** Este gráfico mostra a média da disciplina **{materia_opcao.replace("Nota_", "").replace("_", " ")}** por estado.  
+As diferenças entre UFs evidenciam desigualdades regionais, que podem estar ligadas a fatores como infraestrutura escolar, formação de professores, acesso a recursos e políticas educacionais locais.  
+Ao identificar estados com desempenho mais baixo, é possível orientar ações específicas de investimento e melhoria.  
+""")
+
