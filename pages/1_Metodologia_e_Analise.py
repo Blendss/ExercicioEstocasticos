@@ -2,7 +2,30 @@ import streamlit as st
 
 st.set_page_config(page_title="Metodologia e Análises", page_icon="📄")
 
-st.title("📄 Metodologia: Limpeza de Dados e 30 Questões Respondidas")
+st.title("📄 Metodologia e Contexto")
+
+
+st.header("Introdução")
+
+st.markdown("""
+Neste trabalho, realizamos uma análise exploratória e estatística dos microdados do 
+Exame Nacional do Ensino Médio (ENEM) do ano de 2018, com o objetivo de investigar 
+possíveis padrões, correlações e comportamentos estocásticos entre diferentes 
+variáveis, como as notas por área do conhecimento, características 
+sociodemográficas dos participantes e fatores institucionais.
+Utilizando técnicas de regressão linear e testes de hipóteses, exploramos relações 
+entre notas de disciplinas específicas — como matemática e redação — com a 
+intenção de verificar a existência de dependências estatísticas, distribuição dos 
+resíduos, homocedasticidade e normalidade. Também aplicamos transformações 
+logarítmicas para estabilizar a variância dos erros e avaliamos a aderência dos 
+resíduos à distribuição normal por meio de gráficos de quantis (QQ Plot).
+Essa análise nos permitiu aplicar conceitos fundamentais dos processos estocásticos 
+na prática, como variáveis aleatórias, distribuição de probabilidade e comportamento 
+dos erros. Ao final, refletimos sobre a adequação do modelo e os possíveis fatores 
+ocultos que influenciam o desempenho dos alunos, propondo caminhos para estudos 
+mais robustos em políticas públicas de educação.
+""")
+
 
 # ========================
 # Seção: Limpeza de Dados
