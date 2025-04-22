@@ -7,10 +7,10 @@ import altair as alt
 # ==========================
 # CONFIGURAÇÕES INICIAIS
 # ==========================
-st.set_page_config(page_title="Painel ENEM - Governo do Brasil", layout="wide")
-st.title("📊 Painel Interativo ENEM - Governo Federal")
+st.set_page_config(page_title="Painel ENEM 2018", layout="wide")
+st.title("📊 Painel Interativo ENEM 2018")
 st.markdown(
-    "Este painel apresenta uma análise dos microdados do ENEM (amostra de 24 mil estudantes) de forma interativa, acessível e informativa para a sociedade.",
+    "Este painel apresenta uma análise dos microdados do ENEM 2018 (amostra de 24 mil estudantes) de forma interativa, acessível e informativa para a sociedade.",
 )
 
 # ==========================
