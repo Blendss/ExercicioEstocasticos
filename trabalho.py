@@ -47,6 +47,7 @@ if uf_selecionada != "Todos":
     df_filtrado = df[df['SG_UF_ESC'] == uf_selecionada]
 else:
     df_filtrado = df
+uf_sel = st.sidebar.selectbox("UF da Escola", options=sorted(ufs), index=0)
 sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
 cor_sel = st.sidebar.multiselect(
     "Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()),
