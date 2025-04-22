@@ -1,171 +1,107 @@
-# Este programa fará a análise exploratória dos dados do arquivo 'dados_academicos_2.csv' e gerará gráficos para visualização dos dados.
-# O arquivo 'dados_academicos_2.csv' deve estar na mesma pasta que este script.
-# Será utilizado o framework Streamlit para criar uma interface web para visualização dos dados.
-
-# Importando as bibliotecas necessárias
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import streamlit as st
 
-# st.set_page_config(layout="wide")
+# ==========================
+# CONFIGURAÇÕES INICIAIS
+# ==========================
+st.set_page_config(page_title="Painel ENEM - Governo do Brasil", layout="wide")
+st.title("📊 Painel Interativo ENEM - Governo Federal")
+st.markdown("Este painel apresenta uma análise dos microdados do ENEM de forma interativa, acessível e informativa para a sociedade.")
 
-# Carregando o arquivo de dados
-df = pd.read_csv('dados_academicos_2.csv')
+# ==========================
+# LEITURA DOS DADOS
+# ==========================
+@st.cache_data
+def carregar_dados():
+    return pd.read_csv("microdados_enem.csv", sep=",")
 
-# Criando uma lista com as colunas que possuem variáveis numericas
-colunas_numericas = ['N_REDACAO', 'N_MATEMATICA', 'N_FISICA', 'N_PORTUGUES', 'N_BIOLOGIA', 'IDADE', 'ALTURA']
+df = carregar_dados()
 
-# Título do aplicativo
-st.title('Análise Exploratória de Dados Acadêmicos')
+# ==========================
+# RENOMEANDO PARA MAIOR CLAREZA
+# ==========================
+df.rename(columns={
+    "TP_SEXO": "Sexo",
+    "TP_COR_RACA": "Cor_Raca",
+    "SG_UF_ESC": "UF_Escola",
+    "NU_NOTA_CN": "Nota_Ciencias_Natureza",
+    "NU_NOTA_CH": "Nota_Ciencias_Humanas",
+    "NU_NOTA_LC": "Nota_Linguagens",
+    "NU_NOTA_MT": "Nota_Matematica",
+    "NU_NOTA_REDACAO": "Nota_Redacao",
+    "Q006": "Renda_Familiar"
+}, inplace=True)
 
-# Gráficos de distribuição para variáveis numéricas
-st.subheader('Distribuição das Variáveis Numéricas')
+# ==========================
+# FILTROS
+# ==========================
+st.sidebar.header("Filtros")
+ufs = df["UF_Escola"].dropna().unique()
+uf_sel = st.sidebar.selectbox("UF da Escola", options=sorted(ufs), index=0)
 
+sexo_sel = st.sidebar.multiselect("Sexo", options=["F", "M"], default=["F", "M"])
+cor_sel = st.sidebar.multiselect("Cor/Raça", options=sorted(df["Cor_Raca"].dropna().unique()), default=df["Cor_Raca"].dropna().unique())
 
+df_filtros = df[
+    (df["UF_Escola"] == uf_sel) &
+    (df["Sexo"].isin(sexo_sel)) &
+    (df["Cor_Raca"].isin(cor_sel))
+]
 
-# Incluindo um slider para determinar o numero de bins
+# ==========================
+# MÉDIA DAS NOTAS POR DISCIPLINA
+# ==========================
+st.markdown("## 🧮 Médias das Notas por Disciplina")
+medias = df_filtros[["Nota_Ciencias_Natureza", "Nota_Ciencias_Humanas", "Nota_Linguagens", "Nota_Matematica", "Nota_Redacao"]].mean()
+st.bar_chart(medias)
 
-# Gráfico de distribuição para cada variável numérica
-for col in colunas_numericas:
-    plt.figure(figsize=(10, 5))
-    num_bins = st.slider('Número de bins para o histograma', min_value=5, max_value=50, value=30, key=col)
-    sns.histplot(df[col], bins=num_bins, kde=True, color='blue')
-    plt.title(f'Distribuição de {col}', fontsize=16)
-    plt.xlabel(col, fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    st.pyplot(plt) # Exibe o gráfico no Streamlit
-    # plt.clf() # Limpa a figura para o próximo gráfico
+# ==========================
+# DISTRIBUIÇÃO POR SEXO
+# ==========================
+st.markdown("## 📈 Distribuição de Notas por Sexo")
+disciplina = st.selectbox("Selecione a disciplina:", [
+    "Nota_Ciencias_Natureza", "Nota_Ciencias_Humanas",
+    "Nota_Linguagens", "Nota_Matematica", "Nota_Redacao"
+])
 
-col1, col2, col3 = st.columns([1,2,1])
-# Gráfico de barras para variáveis categóricas
-with col1:
-    st.subheader('Distribuição de SEXO')
-    sexo_counts = df['SEXO'].value_counts()
-    plt.figure(figsize=(6, 4))
-    sns.barplot(x=sexo_counts.index, y=sexo_counts.values, hue=sexo_counts.index, palette='Set2', dodge=False)
-    plt.title('Distribuição de SEXO', fontsize=16)
-    plt.xlabel('SEXO', fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    st.pyplot(plt)  # Exibe o gráfico no Streamlit
-    plt.clf()  # Limpa a figura para o próximo gráfico
-
-with col2:
-    st.subheader('Distribuição de ESPORTE_PREFERIDO')
-    esporte_counts = df['ESPORTE_PREFERIDO'].value_counts()
-    plt.figure(figsize=(6, 4))
-    sns.barplot(x=esporte_counts.index, y=esporte_counts.values, hue=esporte_counts.index, palette='Paired',
-                dodge=False)
-    plt.title('Distribuição de ESPORTE_PREFERIDO', fontsize=16)
-    plt.xlabel('ESPORTE_PREFERIDO', fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    plt.xticks(rotation=45)
-    st.pyplot(plt)  # Exibe o gráfico no Streamlit
-    plt.clf()  # Limpa a figura para o próximo gráfico
-with col3:
-    st.subheader('Distribuição de COR')
-    cor_counts = df['COR'].value_counts()
-    plt.figure(figsize=(6, 4))
-    sns.barplot(x=cor_counts.index, y=cor_counts.values, hue=cor_counts.index, palette='Set2', dodge=False)
-    plt.title('Distribuição de COR', fontsize=16)
-    plt.xlabel('COR', fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    plt.xticks(rotation=45)
-    st.pyplot(plt)  # Exibe o gráfico no Streamlit
-    plt.clf()  # Limpa a figura para o próximo gráfico
-
-col4, col5 = st.columns([2,2])
-with col4:
-    st.subheader('Distribuição de ALTURA')
-    altura_counts = df['ALTURA'].value_counts()
-    plt.figure(figsize=(6, 4))
-    sns.barplot(x=altura_counts.index, y=altura_counts.values, palette='Set1')
-    plt.title('Distribuição de ALTURA', fontsize=16)
-    plt.xlabel('ALTURA', fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    plt.xticks(rotation=90)
-    st.pyplot(plt)  # Exibe o gráfico no Streamlit
-    plt.clf()  # Limpa a figura para o próximo gráfico
-with col5:
-    st.subheader('Distribuição de IDADE')
-    idade_counts = df['IDADE'].value_counts()
-    plt.figure(figsize=(6, 4))
-    sns.barplot(x=idade_counts.index, y=idade_counts.values, palette='Set1')
-    plt.title('Distribuição de IDADE', fontsize=16)
-    plt.xlabel('IDADE', fontsize=14)
-    plt.ylabel('Frequência', fontsize=14)
-    plt.xticks(rotation=45)
-    st.pyplot(plt)  # Exibe o gráfico no Streamlit
-    plt.clf()  # Limpa a figura para o próximo gráfico
-
-# # Plotando em um histograma a nota de matemática por sexo escolhida pelo usuário em um selectbox
-st.subheader('Distribuição da Nota de Matemática por Sexo')
-sexo_selecionado = st.selectbox('Selecione o sexo:', df['SEXO'].unique())
-
-# # Plotando o histograma para o sexo selecionado
-df_sexo = df[df['SEXO'] == sexo_selecionado]
 plt.figure(figsize=(10, 5))
-sns.histplot(df_sexo['N_MATEMATICA'], bins=num_bins, kde=True, color='blue')
-plt.title(f'Distribuição de N_MATEMATICA para {sexo_selecionado}', fontsize=16)
-plt.xlabel('N_MATEMATICA', fontsize=14)
-plt.ylabel('Frequência', fontsize=14)
-st.pyplot(plt) # Exibe o gráfico no Streamlit
-plt.clf() # Limpa a figura para o próximo gráfico
+sns.histplot(data=df_filtros, x=disciplina, hue="Sexo", kde=True, bins=30)
+plt.title(f"Distribuição das Notas em {disciplina}", fontsize=16)
+st.pyplot(plt.gcf())
+plt.clf()
 
-#===========
-
-# # Plotando em um histograma a nota de matemática por sexo escolhida pelo usuário em um selectbox
-st.subheader('Distribuição da Nota de Matemática por Esporte')
-esporte_selecionado = st.selectbox('Selecione o esporte:', df['ESPORTE_PREFERIDO'].unique())
-
-# # Plotando o histograma para o sexo selecionado
-df_esporte = df[df['ESPORTE_PREFERIDO'] == esporte_selecionado]
+# ==========================
+# GRÁFICO DE RENDA VS NOTA
+# ==========================
+st.markdown("## 💰 Renda Familiar e Desempenho")
+renda_vs_nota = df_filtros.groupby("Renda_Familiar")[disciplina].mean().sort_values()
 plt.figure(figsize=(10, 5))
-sns.histplot(df_esporte['N_MATEMATICA'], bins=num_bins, kde=True, color='blue')
-plt.title(f'Distribuição de N_MATEMATICA para {esporte_selecionado}', fontsize=16)
-plt.xlabel('N_MATEMATICA', fontsize=14)
-plt.ylabel('Frequência', fontsize=14)
-st.pyplot(plt) # Exibe o gráfico no Streamlit
-plt.clf() # Limpa a figura para o próximo gráfico
+renda_vs_nota.plot(kind='bar', color='green')
+plt.title(f'Média de {disciplina} por Faixa de Renda Familiar')
+plt.xlabel('Faixa de Renda (Q006)')
+plt.ylabel('Nota Média')
+st.pyplot(plt.gcf())
+plt.clf()
 
-#===========
+# ==========================
+# EXPLICAÇÕES E CÓDIGOS DE VARIÁVEIS
+# ==========================
+with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
+    st.markdown("""
+    **TP_COR_RACA:**  
+    0 - Não declarado  
+    1 - Branca  
+    2 - Preta  
+    3 - Parda  
+    4 - Amarela  
+    5 - Indígena
 
-# # Criando dois seletores: um para a cor e outro para a disciplina
-cor_selecionada = st.selectbox('Selecione a cor:', df['COR'].unique())
-disciplina_selecionada = st.selectbox('Selecione a disciplina:', colunas_numericas[1:5], key='disciplina1')
-
-# # Colocando um botao para gerar o gráfico
-if st.button('Gerar Gráfico'):
-# # Verifica se a disciplina selecionada é válida
-    if disciplina_selecionada not in colunas_numericas[1:]:
-        st.error('Selecione uma disciplina válida!')
-    else:
-    # # Plotando o histograma para a cor e disciplina selecionadas
-        df_cor = df[df['COR'] == cor_selecionada]
-        plt.figure(figsize=(10, 5))
-        sns.histplot(df_cor[disciplina_selecionada], bins=num_bins, kde=True, color='blue')
-        plt.title(f'Distribuição de {disciplina_selecionada} para {cor_selecionada}', fontsize=16)
-        plt.xlabel(disciplina_selecionada, fontsize=14)
-        plt.ylabel('Frequência', fontsize=14)
-        st.pyplot(plt) # Exibe o gráfico no Streamlit
-    #
-
-# Vendo as notas por esporte escolhido pelo usuário em um segmented_control
-st.subheader('Notas por Esporte Preferido')
-esporte_selecionado = st.selectbox('Selecione o esporte:', df['ESPORTE_PREFERIDO'].unique(), key='esporte2')
-# Selecionando o sexo e a disciplina
-disciplina_selecionada2 = st.selectbox('Selecione a disciplina:', colunas_numericas[1:5], key='disciplina2')
-
-# Incluindo um radiobox para escolher o número de bins
-numero_bins = st.radio('Número de bins para o histograma', (5, 10, 20, 30, 50), index=2)
-
-# Plotando o gráfico de barras de notas dos alunos que praticam o esporte e a a disciplina selecionada
-# Plotando o gráfico de barras para o esporte e disciplina selecionados
-df_esporte = df[df['ESPORTE_PREFERIDO'] == esporte_selecionado]
-plt.figure(figsize=(10, 5))
-sns.histplot(df_esporte[disciplina_selecionada2], bins=numero_bins, kde=True, color='blue')
-plt.title(f'Distribuição de {disciplina_selecionada2} para praticantes de {esporte_selecionado}', fontsize=16)
-plt.xlabel(disciplina_selecionada2, fontsize=14)
-plt.ylabel('Frequência', fontsize=14)
-st.pyplot(plt)
-plt.clf() # Limpa a figura para o próximo gráfico
+    **Q006 - Renda Familiar:**  
+    A - Nenhuma renda  
+    B - Até R$ 998,00  
+    C - De R$ 998,01 até R$ 1.497,00  
+    ...  
+    Q - Acima de R$ 9.600,01  
+    """)
