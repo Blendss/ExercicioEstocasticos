@@ -206,3 +206,42 @@ st.markdown(f"""
 As diferenças entre UFs evidenciam desigualdades regionais, que podem estar ligadas a fatores como infraestrutura escolar, formação de professores, acesso a recursos e políticas educacionais locais.  
 Ao identificar estados com desempenho mais baixo, é possível orientar ações específicas de investimento e melhoria.  
 """)
+
+# ==========================
+# GRÁFICO 5: Proporção de Participantes por Sexo (Pizza)
+# ==========================
+st.markdown("## 🧍‍♀️🧍‍♂️ Proporção de Participantes por Sexo")
+
+sexo_counts = df_filtrado['Sexo'].value_counts()
+fig, ax = plt.subplots()
+ax.pie(sexo_counts, labels=sexo_counts.index, autopct='%1.1f%%', startangle=90, colors=["#66b3ff", "#ff9999"])
+ax.axis('equal')  # Circulo
+st.pyplot(fig)
+
+st.markdown("""
+**Análise:** A proporção por sexo revela o equilíbrio (ou desequilíbrio) de participação entre homens e mulheres no ENEM.  
+Essas informações são úteis para pensar em políticas públicas voltadas à inclusão e incentivo à participação de grupos sub-representados.
+""")
+
+# ==========================
+# GRÁFICO 6: Distribuição das Notas Totais (Histograma)
+# ==========================
+st.markdown("## 📊 Distribuição da Média Geral das Notas")
+
+# Calcula a média das cinco notas por aluno
+df_filtrado['Nota_Total'] = df_filtrado[
+    ['Nota_Matematica', 'Nota_Linguagens', 'Nota_Ciencias_Humanas', 'Nota_Ciencias_Natureza', 'Nota_Redacao']
+].mean(axis=1)
+
+fig2, ax2 = plt.subplots(figsize=(10, 5))
+sns.histplot(df_filtrado['Nota_Total'].dropna(), bins=30, kde=True, color='skyblue')
+plt.xlabel("Média Geral das Notas")
+plt.ylabel("Número de Participantes")
+plt.title("Distribuição das Médias Finais das Notas por Participante")
+st.pyplot(fig2)
+
+st.markdown("""
+**Análise:** A distribuição da nota geral mostra onde se concentra a maior parte dos participantes em termos de desempenho médio.  
+A curva ajuda a identificar padrões, como assimetria, concentração de médias baixas ou altas, e pode indicar desigualdade na distribuição de oportunidades educacionais.
+""")
+
