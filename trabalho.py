@@ -265,26 +265,3 @@ st.markdown("""
 **Análise:** A distribuição da nota média geral evidencia a concentração de desempenho da amostra analisada.  
 A curva suavizada (kde) permite visualizar se há uma distribuição simétrica, assimétrica, ou a presença de múltiplos agrupamentos, o que pode revelar padrões ou desigualdades relevantes.
 """)
-
-
-st.markdown("### Distribuição de Treineiros")
-treineiro_counts = df['IN_TREINEIRO'].value_counts().rename(index={0: "Não", 1: "Sim"})
-st.bar_chart(treineiro_counts)
-
-st.markdown("### Escolaridade do Pai (Q001)")
-q001_labels = {
-"A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
-"D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
-"G": "Pós completo", "H": "Não sei"
-}
-q001_counts = df['Q001'].value_counts().rename(index=q001_labels)
-st.bar_chart(q001_counts)
-
-st.markdown("### Escolaridade da Mãe (Q002)")
-q002_labels = {
-"A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
-"D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
-"G": "Pós completo", "H": "Não sei"
-}
-q002_counts = df['Q002'].value_counts().rename(index=q002_labels)
-st.bar_chart(q002_counts)
