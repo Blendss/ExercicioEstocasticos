@@ -62,7 +62,7 @@ if tipo_escola:
 
 # Filtro por treineiro
 treineiro = st.sidebar.radio("É Treineiro?", options=[0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
-df = df[df['IN_TREINEIRO'] == treineiro]
+df = df[df['IN_TREINEIRO'].isin(treineiro)]
 
 # Filtros
 df_filtrado = df.copy()
@@ -74,7 +74,7 @@ df_filtrado = df_filtrado[
     (df_filtrado["Sexo"].isin(sexo_sel)) &
     (df_filtrado["Cor_Raca"].isin(cor_sel)) &
     (df_filtrado['TP_ESCOLA'].isin(tipo_escola)) &
-    (df_filtrado['IN_TREINEIRO'] == treineiro) &
+    (df_filtrado['IN_TREINEIRO'].isin(treineiro)) &
     (df_filtrado["Renda_Familiar"].isin(renda_sel))
 ]
 
