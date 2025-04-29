@@ -266,10 +266,6 @@ st.markdown("""
 A curva suavizada (kde) permite visualizar se há uma distribuição simétrica, assimétrica, ou a presença de múltiplos agrupamentos, o que pode revelar padrões ou desigualdades relevantes.
 """)
 
-st.markdown("### Média das Notas por Tipo de Escola")
-media_por_escola = df.groupby('TP_ESCOLA')[['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']].mean()
-media_por_escola.index = media_por_escola.index.map({1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"})
-st.bar_chart(media_por_escola)
 
 st.markdown("### Distribuição de Treineiros")
 treineiro_counts = df['IN_TREINEIRO'].value_counts().rename(index={0: "Não", 1: "Sim"})
