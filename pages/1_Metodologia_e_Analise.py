@@ -68,6 +68,7 @@ Redução de: 1620004 linhas (29.38%)
 Tamanho depois do filtro (Parquet): 135.58 MB
 
 Tamanho do arquivo amostrado: 23.74 MB
+Total de linhas na amostra anterior: 24000
 Total de linhas originais: 3893729
 Total de linhas na amostra: 660554
 Fração usada: 0.1696
