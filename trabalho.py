@@ -82,6 +82,8 @@ with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
     st.markdown("""
         **TP_COR_RACA:** 0-Não declarado, 1-Branca, 2-Preta, 3-Parda, 4-Amarela, 5-Indígena
 
+        **IN_TREINEIRO** 0-Nâo treineiro 1-Treineiro
+
         **Q006 - Renda Familiar:**
         - A: Nenhuma renda
         - B: Até *R$* 998,00
