@@ -42,7 +42,8 @@ st.markdown("""
 
 st.markdown("""
 **Tamanho do arquivo antes:** 2473.05 MB  
-**Tamanho do arquivo depois:** 373.79 MB  
+**Tamanho do arquivo depois (CSV):** 373.79 MB  
+**Tamanho do aquivo depois (Parquet):** 185.90 MB
 """)
 
 st.markdown("""
@@ -50,6 +51,26 @@ st.markdown("""
 - Faltaram Dia 1 e foram Dia 2: 11.356 (0.27%)  
 - Foram Dia 1 e faltaram Dia 2: 254.521 (6.12%)  
 - Faltaram nos dois dias: 1.354.127 (32.55%)
+""")
+
+st.markdown("""
+**Duas colunas adicionadas:**
+- TP_ESCOLA / Tipo de escola do Ensino Médio	
+- IN_TREINEIRO / Indica se o inscrito fez a prova com intuito de apenas treinar seus conhecimentos 
+- Tamanho do arquivo depois (Parquet + duas colunas novas): 185.90 MB
+""")
+
+st.markdown("""
+**Nova amostra (apenas alunos presentes no dia 1 e dia 2):**
+Linhas antes do filtro: 5513733
+Linhas após o filtro (só presentes nos dois dias): 3893729
+Redução de: 1620004 linhas (29.38%)
+Tamanho depois do filtro (Parquet): 135.58 MB
+
+Tamanho do arquivo amostrado: 23.74 MB
+Total de linhas originais: 3893729
+Total de linhas na amostra: 660554
+Fração usada: 0.1696
 """)
 
 # ========================
