@@ -268,7 +268,7 @@ A curva suavizada (kde) permite visualizar se há uma distribuição simétrica,
 
 # Gráfico: Tipo de Escola vs Média das Notas
 st.subheader("Média das Notas por Tipo de Escola")
-media_por_escola = df.groupby('TP_ESCOLA')[['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']].mean()
+media_por_escola = df.groupby('TP_ESCOLA')[['Nota_Ciencias_Natureza', 'Nota_Ciencias_Humanas', 'Nota_Linguagens', 'Nota_Matematica', 'Nota_Redacao']].mean()
 media_por_escola.index = media_por_escola.index.map({1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"})
 st.bar_chart(media_por_escola)
 
