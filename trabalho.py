@@ -60,7 +60,7 @@ tipo_escola = st.sidebar.multiselect("Tipo de Escola", options=df['TP_ESCOLA'].u
 if tipo_escola:
     df = df[df['TP_ESCOLA'].isin(tipo_escola)]
 
-treineiro_sel = st.sidebar.multiselect("IN_TREINEIRO", options=["1", "0"], default=["1", "0"])
+treineiro_sel = st.sidebar.multiselect("IN_TREINEIRO", options=[1, 0], default=[1, 0])
 
 # Filtros
 df_filtrado = df.copy()
