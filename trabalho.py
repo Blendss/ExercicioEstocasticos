@@ -267,28 +267,28 @@ A curva suavizada (kde) permite visualizar se há uma distribuição simétrica,
 """)
 
 st.markdown("### Média das Notas por Tipo de Escola")
-    media_por_escola = df.groupby('TP_ESCOLA')[['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']].mean()
-    media_por_escola.index = media_por_escola.index.map({1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"})
-    st.bar_chart(media_por_escola)
+media_por_escola = df.groupby('TP_ESCOLA')[['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']].mean()
+media_por_escola.index = media_por_escola.index.map({1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"})
+st.bar_chart(media_por_escola)
 
 st.markdown("### Distribuição de Treineiros")
-    treineiro_counts = df['IN_TREINEIRO'].value_counts().rename(index={0: "Não", 1: "Sim"})
-    st.bar_chart(treineiro_counts)
+treineiro_counts = df['IN_TREINEIRO'].value_counts().rename(index={0: "Não", 1: "Sim"})
+st.bar_chart(treineiro_counts)
 
- st.markdown("### Escolaridade do Pai (Q001)")
-    q001_labels = {
-        "A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
-        "D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
-        "G": "Pós completo", "H": "Não sei"
-    }
-    q001_counts = df['Q001'].value_counts().rename(index=q001_labels)
-    st.bar_chart(q001_counts)
+st.markdown("### Escolaridade do Pai (Q001)")
+q001_labels = {
+"A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
+"D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
+"G": "Pós completo", "H": "Não sei"
+}
+q001_counts = df['Q001'].value_counts().rename(index=q001_labels)
+st.bar_chart(q001_counts)
 
- st.markdown("### Escolaridade da Mãe (Q002)")
-    q002_labels = {
-        "A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
-        "D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
-        "G": "Pós completo", "H": "Não sei"
-    }
-    q002_counts = df['Q002'].value_counts().rename(index=q002_labels)
-    st.bar_chart(q002_counts)
+st.markdown("### Escolaridade da Mãe (Q002)")
+q002_labels = {
+"A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
+"D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
+"G": "Pós completo", "H": "Não sei"
+}
+q002_counts = df['Q002'].value_counts().rename(index=q002_labels)
+st.bar_chart(q002_counts)
