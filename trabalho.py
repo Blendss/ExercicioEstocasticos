@@ -60,9 +60,7 @@ tipo_escola = st.sidebar.multiselect("Tipo de Escola", options=df['TP_ESCOLA'].u
 if tipo_escola:
     df = df[df['TP_ESCOLA'].isin(tipo_escola)]
 
-# Filtro por treineiro
-treineiro = st.sidebar.radio("É Treineiro?", options=[0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
-df = df[df['IN_TREINEIRO'].isin(treineiro)]
+treineiro_sel = st.sidebar.multiselect("IN_TREINEIRO", options=["1", "0"], default=["1", "0"])
 
 # Filtros
 df_filtrado = df.copy()
@@ -74,7 +72,7 @@ df_filtrado = df_filtrado[
     (df_filtrado["Sexo"].isin(sexo_sel)) &
     (df_filtrado["Cor_Raca"].isin(cor_sel)) &
     (df_filtrado['TP_ESCOLA'].isin(tipo_escola)) &
-    (df_filtrado['IN_TREINEIRO'].isin(treineiro)) &
+    (df_filtrado['IN_TREINEIRO'].isin(treineiro_sel)) &
     (df_filtrado["Renda_Familiar"].isin(renda_sel))
 ]
 
