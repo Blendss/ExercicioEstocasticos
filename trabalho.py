@@ -67,6 +67,15 @@ df_filtrado = df_filtrado[
     (df_filtrado["Renda_Familiar"].isin(renda_sel))
 ]
 
+# Filtro por tipo de escola
+tipo_escola = st.sidebar.multiselect("Tipo de Escola", options=df['TP_ESCOLA'].unique(), format_func=lambda x: {1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"}.get(x, x))
+if tipo_escola:
+    df = df[df['TP_ESCOLA'].isin(tipo_escola)]
+
+# Filtro por treineiro
+treineiro = st.sidebar.radio("É Treineiro?", options=[0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
+df = df[df['IN_TREINEIRO'] == treineiro]
+
 with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
     st.markdown("""
         **TP_COR_RACA:** 0-Não declarado, 1-Branca, 2-Preta, 3-Parda, 4-Amarela, 5-Indígena
@@ -243,15 +252,47 @@ df_filtrado['Nota_Total'] = df_filtrado[
     ['Nota_Matematica', 'Nota_Linguagens', 'Nota_Ciencias_Humanas', 'Nota_Ciencias_Natureza', 'Nota_Redacao']
 ].mean(axis=1)
 
-fig2, ax2 = plt.subplots(figsize=(10, 5))
-sns.histplot(df_filtrado['Nota_Total'].dropna(), bins=30, kde=True, color='skyblue')
-plt.xlabel("Média Geral das Notas")
-plt.ylabel("Número de Participantes")
-plt.title("Distribuição das Médias Finais das Notas por Participante")
-st.pyplot(fig2)
+# Exibir histograma
+plt.figure(figsize=(10, 5))
+sns.histplot(df_filtrado['Nota_Total'], bins=30, kde=True, color='skyblue')
+plt.xlabel("Nota Média Geral")
+plt.ylabel("Quantidade de Estudantes")
+plt.title("Distribuição da Nota Média Geral dos Estudantes")
+st.pyplot(plt.gcf())
+plt.clf()
 
 st.markdown("""
-**Análise:** A distribuição da nota geral mostra onde se concentra a maior parte dos participantes em termos de desempenho médio.  
-A curva ajuda a identificar padrões, como assimetria, concentração de médias baixas ou altas, e pode indicar desigualdade na distribuição de oportunidades educacionais.
+**Análise:** A distribuição da nota média geral evidencia a concentração de desempenho da amostra analisada.  
+A curva suavizada (kde) permite visualizar se há uma distribuição simétrica, assimétrica, ou a presença de múltiplos agrupamentos, o que pode revelar padrões ou desigualdades relevantes.
 """)
+
+# Gráfico: Tipo de Escola vs Média das Notas
+st.subheader("Média das Notas por Tipo de Escola")
+media_por_escola = df.groupby('TP_ESCOLA')[['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']].mean()
+media_por_escola.index = media_por_escola.index.map({1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"})
+st.bar_chart(media_por_escola)
+
+# Gráfico: Distribuição de Treineiros
+st.subheader("Distribuição de Treineiros")
+treineiro_counts = df['IN_TREINEIRO'].value_counts().rename({0: "Não", 1: "Sim"})
+st.bar_chart(treineiro_counts)
+
+# Gráfico: Escolaridade dos Pais (Q001 e Q002)
+st.subheader("Escolaridade do Pai (Q001)")
+q001_labels = {
+    "A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
+    "D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
+    "G": "Pós completo", "H": "Não sei"
+}
+q001_counts = df['Q001'].value_counts().rename(index=q001_labels)
+st.bar_chart(q001_counts)
+
+st.subheader("Escolaridade da Mãe (Q002)")
+q002_labels = {
+    "A": "Nunca estudou", "B": "Até 4ª série", "C": "4ª a 8ª série",
+    "D": "Fund. completo", "E": "Médio completo", "F": "Superior incompleto",
+    "G": "Pós completo", "H": "Não sei"
+}
+q002_counts = df['Q002'].value_counts().rename(index=q002_labels)
+st.bar_chart(q002_counts)
 
