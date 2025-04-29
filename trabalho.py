@@ -55,6 +55,15 @@ renda_sel = st.sidebar.multiselect(
     default=sorted(df["Renda_Familiar"].dropna().unique())
 )
 
+# Filtro por tipo de escola
+tipo_escola = st.sidebar.multiselect("Tipo de Escola", options=df['TP_ESCOLA'].unique(), format_func=lambda x: {1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"}.get(x, x))
+if tipo_escola:
+    df = df[df['TP_ESCOLA'].isin(tipo_escola)]
+
+# Filtro por treineiro
+treineiro = st.sidebar.radio("É Treineiro?", options=[0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
+df = df[df['IN_TREINEIRO'] == treineiro]
+
 # Filtros
 df_filtrado = df.copy()
 
@@ -64,17 +73,12 @@ if uf_sel != "Todos":
 df_filtrado = df_filtrado[
     (df_filtrado["Sexo"].isin(sexo_sel)) &
     (df_filtrado["Cor_Raca"].isin(cor_sel)) &
+    (df_filtrado['TP_ESCOLA'].isin(tipo_escola)) &
+    (df_filtrado['IN_TREINEIRO'] == treineiro) &
     (df_filtrado["Renda_Familiar"].isin(renda_sel))
 ]
 
-# Filtro por tipo de escola
-tipo_escola = st.sidebar.multiselect("Tipo de Escola", options=df['TP_ESCOLA'].unique(), format_func=lambda x: {1: "Não Respondeu", 2: "Pública", 3: "Exterior", 4: "Privada"}.get(x, x))
-if tipo_escola:
-    df = df[df['TP_ESCOLA'].isin(tipo_escola)]
 
-# Filtro por treineiro
-treineiro = st.sidebar.radio("É Treineiro?", options=[0, 1], format_func=lambda x: "Não" if x == 0 else "Sim")
-df = df[df['IN_TREINEIRO'] == treineiro]
 
 with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
     st.markdown("""
