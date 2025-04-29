@@ -18,7 +18,7 @@ st.markdown(
 # ==========================
 @st.cache_data
 def carregar_dados():
-    df = pd.read_csv("microdados_enem.csv", sep=",")
+    df = pd.read_parquet("amostra_presentes_max25mb.parquet", engine='fastparquet')
     df.rename(columns={
         "TP_SEXO": "Sexo",
         "TP_COR_RACA": "Cor_Raca",
