@@ -75,7 +75,7 @@ Fração usada: 0.1696
 """)
 
 
-st.title("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
+st.header("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
 
 # Introdução
 st.markdown("""
