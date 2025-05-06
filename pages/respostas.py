@@ -8,6 +8,7 @@ import numpy as np
 # Configurações iniciais
 st.set_page_config(page_title="Análise ENEM 2018 - 30 Questões", layout="wide")
 st.title("📊 Análise ENEM 2018 - 30 Questões Respondidas com Visualizações")
+st.subtitle("amostra de 660 mil estudantes")
 
 # Leitura dos dados
 @st.cache_data
