@@ -76,7 +76,6 @@ Fração usada: 0.1696
 
 st.header("💡 Perguntas respondidas com gráficos")
 st.markdown("""
-**Duas colunas adicionadas:**
 Acessando a página "respostas" no painel a esquerda, há 30 perguntas respondidas com gráficos estáticos e um dicionário para as legendas no topo da página
 """)
 
