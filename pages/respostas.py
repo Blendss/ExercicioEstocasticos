@@ -342,32 +342,39 @@ st.markdown(f"""
 # =============================================
 st.header("Q15: Qual estado teve a menor média em Ciências da Natureza?")
 
+# Verifica se a coluna existe ou usa alternativa
+uf_column = 'SG_UF_ESC' if 'SG_UF_ESC' in df.columns else 'UF_Escola'  # Verifica nomes alternativos
+
 # Calcula a média de notas por estado
-media_estados = df.groupby('SG_UF_ESC')['NU_NOTA_CN'].mean().sort_values().reset_index()
+try:
+    media_estados = df.groupby(uf_column)['NU_NOTA_CN'].mean().sort_values().reset_index()
+    
+    # Gráfico simples de barras
+    plt.figure(figsize=(10, 5))
+    sns.barplot(data=media_estados, x=uf_column, y='NU_NOTA_CN', color='royalblue')
+    plt.title('Média de Ciências da Natureza por Estado')
+    plt.xlabel('Estado')
+    plt.ylabel('Média de Notas')
+    plt.xticks(rotation=45)
+    st.pyplot(plt.gcf())
+    plt.clf()
 
-# Gráfico simples de barras
-plt.figure(figsize=(10, 5))
-sns.barplot(data=media_estados, x='SG_UF_ESC', y='NU_NOTA_CN', color='royalblue')
-plt.title('Média de Ciências da Natureza por Estado')
-plt.xlabel('Estado')
-plt.ylabel('Média de Notas')
-plt.xticks(rotation=45)
-st.pyplot(plt.gcf())
-plt.clf()
+    # Resultado
+    pior_estado = media_estados.iloc[0][uf_column]
+    pior_media = media_estados.iloc[0]['NU_NOTA_CN']
+    media_nacional = df['NU_NOTA_CN'].mean()
 
-# Resultado
-pior_estado = media_estados.iloc[0]['SG_UF_ESC']
-pior_media = media_estados.iloc[0]['NU_NOTA_CN']
-media_nacional = df['NU_NOTA_CN'].mean()
+    st.markdown(f"""
+    **Resultado:**  
+    O estado com a menor média foi **{pior_estado}** com **{pior_media:.1f} pontos**.  
+    A média nacional foi de **{media_nacional:.1f} pontos**.
+    """)
 
-st.markdown(f"""
-**Resultado:**  
-O estado com a menor média foi **{pior_estado}** com **{pior_media:.1f} pontos**.  
-A média nacional foi de **{media_nacional:.1f} pontos**.
+except KeyError as e:
+    st.error(f"Erro: Coluna não encontrada. Colunas disponíveis: {list(df.columns)}")
+    st.error(str(e))
 
-**O que isso significa?**  
-Indica que os estudantes deste estado tiveram, em geral, mais dificuldade na prova de Ciências da Natureza.
-""")
+
 # =============================================
 # Q16: Idade média top 10% Matemática: 4.3
 # =============================================
