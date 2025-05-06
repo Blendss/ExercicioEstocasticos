@@ -29,6 +29,33 @@ def carregar_dados():
 
 df = carregar_dados()
 
+with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
+    st.markdown("""
+        **TP_COR_RACA:** 0-Não declarado, 1-Branca, 2-Preta, 3-Parda, 4-Amarela, 5-Indígena
+
+        **IN_TREINEIRO** 0-Nâo treineiro 1-Treineiro
+
+        **Q006 - Renda Familiar:**
+        - A: Nenhuma renda
+        - B: Até *R$* 998,00
+        - C: De *R$* 998,01 até *R$* 1.497,00
+        - D: De *R$* 1.431,01 até *R$* 1.908,00.
+        - E: De *R$* 1.908,01 até *R$* 2.385,00.
+        - F: De *R$* 2.385,01 até *R$* 2.862,00.
+        - G: De *R$* 2.862,01 até *R$* 3.816,00.
+        - H: De *R$* 3.816,01 até *R$* 4.770,00.
+        - I: De *R$* 4.770,01 até *R$* 5.724,00.
+        - J: De *R$* 5.724,01 até *R$* 6.678,00.
+        - K: De *R$* 6.678,01 até *R$* 7.632,00.
+        - L: De *R$* 7.632,01 até *R$* 8.586,00.
+        - M: De *R$* 8.586,01 até *R$* 9.540,00.
+        - N: De *R$* 9.540,01 até *R$* 11.448,00.
+        - O: De *R$* 11.448,01 até *R$* 14.310,00.
+        - P: De *R$* 14.310,01 até *R$* 19.080,00.
+        - Q: Acima de *R$* 9.600,01
+    """)
+
+
 # =============================================
 # Q1: Maior média em Matemática: MG
 # =============================================
