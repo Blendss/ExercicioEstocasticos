@@ -196,7 +196,7 @@ plt.title('Distribuição de Participantes por Idade (Top 10)')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária mais comum entre os participantes é {idade_counts.iloc[0]['Idade']} anos.
+**Resposta confirmada:** A faixa etária mais comum entre os participantes é o grupo {idade_counts.iloc[0]['Idade']}.
 """)
 
 # =============================================
