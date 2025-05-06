@@ -160,7 +160,7 @@ st.markdown(f"""
 # =============================================
 st.header("Q8: Faixa etária mais comum: 18 anos")
 
-idade_counts = df['NU_IDADE'].value_counts().reset_index()
+idade_counts = df['TP_FAIXA_ETARIA'].value_counts().reset_index()
 idade_counts.columns = ['Idade', 'Count']
 
 fig, ax = plt.subplots(figsize=(12, 6))
