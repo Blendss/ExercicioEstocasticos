@@ -81,11 +81,11 @@ st.title("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
 st.markdown("""
 ## 1. Contextualização e Metodologia
 Esta análise exploratória dos microdados do ENEM 2018, com amostra de **660 mil participantes**, revelou padrões educacionais significativos através de técnicas estatísticas descritivas e inferenciais. Utilizou-se:
-- **Análise de correlação** (matriz de Pearson)
-- **Testes de normalidade** (Shapiro-Wilk)
-- **Transformações de dados** (raiz quadrada e logarítmica)
-- **Comparações de médias** (teste t de Student)
-- **Análise de variância** (ANOVA unidirecional)
+- **Remoção de colunas indesejadas**
+- **Limpesa de dados**
+- **Conversão para arquivo menor**
+- **Criação de gráficos interativos e estáticos**
+- **Conclusão feita com as informações**
 """)
 
 # Seção 1 - Principais Resultados
@@ -98,7 +98,6 @@ with st.container():
         st.subheader("🔎 Desigualdades Regionais")
         st.markdown("""
         - **MG** destacou-se com a **maior média em Matemática (558,51 pontos)**, enquanto **RR** apresentou a **menor performance em Redação (460,43 pontos)**
-        - A análise de variância (ANOVA) confirmou diferenças significativas (p < 0,001) entre estados
         - **DF** liderou em Ciências da Natureza (509,56), contrastando com **AC** (466,1), evidenciando:
           * Disparidades na formação docente regional
           * Diferenças na infraestrutura escolar
@@ -139,7 +138,6 @@ with st.expander("👥 Variáveis Demográficas"):
 with st.expander("📊 Análise de Distribuições"):
     st.markdown("""
     ### 3.3 Normalidade das Variáveis
-    - Teste Shapiro-Wilk rejeitou normalidade para todas as notas (p < 0,001)
     - Transformação por **raiz quadrada** mostrou melhor ajuste que log(1+y)
     - QQ-plots revelaram:
       * Caudas pesadas na distribuição original
@@ -164,7 +162,6 @@ with col1:
     - Dados auto-declaratórios podem conter viés
     - Amostra não probabilística
     - Variáveis omitidas (ex.: qualidade docente)
-    - Efeitos de cohorte não controlados
     - Restrição a participantes presentes em todas as provas
     """)
 
@@ -187,19 +184,14 @@ Esta análise estatística revelou **padrões estruturais de desigualdade educac
 2. **Variáveis regionais** apresentam diferenças estatisticamente significativas  
 3. **Gênero e raça** influenciam padrões de desempenho específicos  
 
-Os resultados corroboram a **teoria do capital cultural** de Bourdieu, demonstrando como características extra-escolares impactam o desempenho acadêmico. A transformação de dados mostrou-se essencial para análises inferenciais válidas.
-
-**Perspectivas futuras:**  
-- Aplicação de modelos multinível  
-- Análise de componentes principais  
-- Estudos longitudinais com painéis temporais  
+Os resultados demonstram como características extra-escolares impactam o desempenho acadêmico. A transformação de dados mostrou-se essencial para análises inferenciais válidas. 
 """)
 
 # Rodapé
 st.divider()
 st.caption("""
-Trabalho realizado para a disciplina [Nome da Disciplina] - [Nome da Universidade]  
-Autores: [Seu Nome] - [Ano]  
+Trabalho realizado para a disciplina Processos Estocásticos - UNISO  
+Autores: Thomas Buchser Monteiro - 2025  
 Dados: INEP/MEC - Microdados ENEM 2018  
 Metodologia: Análise Exploratória, Estatística Descritiva e Inferencial
 """)
