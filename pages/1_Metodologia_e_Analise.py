@@ -77,32 +77,64 @@ Fração usada: 0.1696
 st.header("Conclusão")
 
 st.markdown("""
-A análise estatística dos microdados do ENEM 2018 permitiu observar importantes 
-padrões e desigualdades no desempenho dos participantes em diferentes áreas do 
-conhecimento, considerando variáveis socioeconômicas, demográficas e 
-educacionais. Utilizando técnicas exploratórias e de correlação, foi possível identificar 
-relações significativas e até esperadas, como a maior média de matemática no estado 
-de Minas Gerais (Q1) e a menor média em redação no Amazonas (Q2), refletindo 
-possíveis desigualdades regionais. 
-Além disso, destacam-se diferenças de desempenho por sexo (Q3, Q10, Q17), cor/raça 
-(Q6, Q9, Q21), tipo de escola (Q7, Q25, Q29, Q30), renda familiar (Q4, Q13, Q23), e 
-acesso à internet (Q5, Q18, Q20), que reforçam o impacto do contexto 
-socioeconômico na performance dos candidatos. 
-As análises também evidenciaram que a nota com maior variabilidade é a de redação 
-(Q12), o que pode indicar um maior componente subjetivo na avaliação, e que a maior 
-correlação entre notas foi entre Ciências Humanas e Linguagens (Q11 e matriz de 
-correlação), o que pode apontar para perfis cognitivos semelhantes. 
-Para a modelagem estatística dos dados e avaliação de normalidade das variáveis, 
-especialmente a nota de redação, foi aplicada a transformação do tipo log(1 + y) e 
-posteriormente comparada com a transformação por raiz quadrada. Concluímos que a 
-raiz quadrada apresentou melhor desempenho na simetrização da distribuição, 
-resultando em gráficos QQ mais alinhados com a normalidade teórica — o que é 
-desejável em muitos modelos probabilísticos, como regressões lineares e análise de 
-componentes principais. 
-Esses resultados reforçam a importância da análise estatística aplicada a grandes 
-volumes de dados educacionais, como forma de revelar desigualdades, orientar 
-políticas públicas e aprimorar modelos preditivos. Técnicas de Processos 
-Estocásticos, em especial, se mostram úteis ao estudar a distribuição e variabilidade 
-das notas, bem como para modelar o comportamento dos candidatos frente a fatores 
-externos.
+A análise dos microdados do ENEM 2018, com uma amostra de 660 mil estudantes, permitiu identificar padrões significativos e desigualdades educacionais relacionadas ao desempenho nas diferentes áreas do conhecimento, considerando variáveis socioeconômicas, demográficas e de infraestrutura. Os resultados reforçam a influência de fatores externos no desempenho dos participantes, evidenciando disparidades que vão além da capacidade individual.
+Principais Achados
+Desempenho por Estado
+
+MG destacou-se com a maior média em Matemática (558,51), enquanto RR teve a menor média em Redação (460,43).
+
+DF liderou em Ciências da Natureza (509,56), enquanto AC apresentou o pior desempenho médio (466,1).
+
+MG também registrou a maior diferença entre escolas públicas e privadas em Matemática (138,99 pontos), reforçando a desigualdade educacional.
+
+Influência Socioeconômica
+
+Alunos de escolas privadas tiveram desempenho superior, especialmente em Redação (665,18) e Matemática (619,19).
+
+A faixa de renda "Q" apresentou a maior média em Ciências da Natureza (587,98), enquanto a renda "G" foi a mais comum entre o top 10% em Matemática (6.647 participantes).
+
+O acesso à internet influenciou significativamente as notas:
+
+Matemática: Diferença de 54,55 pontos (548,85 vs. 494,30).
+
+Redação: Diferença de 88,46 pontos (537,39 vs. 448,93).
+
+Fatores Demográficos
+
+Sexo:
+
+Homens tiveram maior média em Linguagens (532,62) e Matemática (diferença de 42,31 pontos).
+
+Mulheres lideraram na mediana de Redação (520,00) e representaram 7,27% das notas acima de 800.
+
+Cor/Raça:
+
+Brancos tiveram a maior média em Ciências Humanas (589,73).
+
+Pardos foram o grupo mais numeroso (303.620 participantes).
+
+Indígenas tiveram a menor mediana em Redação (420).
+
+Variabilidade e Correlações
+
+Redação foi a nota mais variável (DP = 184,44), possivelmente devido à subjetividade da correção.
+
+A maior correlação foi entre Linguagens e Ciências Humanas (0,699), indicando habilidades interdisciplinares.
+
+Apenas 0,0017% dos participantes atingiram nota 1000 em Redação, mostrando a raridade da pontuação máxima.
+
+Idade e Escolaridade dos Pais
+
+A faixa etária mais comum foi 17 anos (127.643 participantes), também predominante no top 10% em Matemática (15.735).
+
+A escolaridade dos pais impactou a Redação:
+
+Diferença de 225,4 pontos (pai) e 209,7 pontos (mãe) entre extremos.
+
+Considerações Finais
+Os resultados confirmam que desigualdades estruturais – como renda, tipo de escola, acesso à internet e região – têm forte impacto no desempenho no ENEM. A análise estatística, incluindo correlações, distribuições e comparações de médias, permitiu identificar tendências e gaps educacionais, úteis para políticas públicas direcionadas.
+
+Além disso, a transformação de dados (como raiz quadrada para normalização) foi essencial para melhorar a modelagem estatística, garantindo análises mais precisas.
+
+Este estudo reforça a importância de avaliações em larga escala para monitorar a qualidade da educação e reduzir disparidades, contribuindo para um sistema educacional mais equitativo e eficiente.
 """)
