@@ -343,12 +343,12 @@ st.markdown(f"""
 st.header("Q15: Estado com menor desempenho médio em Ciências da Natureza")
 
 # Calcular a média de CN por estado
-media_cn_uf = df.groupby('UF_Escola')['NU_NOTA_CN'].mean().sort_values().reset_index()
+media_cn_uf = df.groupby('UF_Escola')['Nota_Ciencias_Natureza'].mean().sort_values().reset_index()
 media_cn_uf.columns = ['UF_Escola', 'Media_CN']
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_cn_uf, x='UF_Escola', y='Media_CN', palette='viridis')
-plt.axhline(y=df['NU_NOTA_CN'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["NU_NOTA_CN"].mean():.1f}')
+plt.axhline(y=df['Nota_Ciencias_Natureza'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["Nota_Ciencias_Natureza"].mean():.1f}')
 plt.title('Desempenho Médio em Ciências da Natureza por Estado')
 plt.xlabel('Estado')
 plt.ylabel('Média de Notas')
@@ -358,7 +358,7 @@ st.pyplot(fig)
 
 st.markdown(f"""
 **Análise:** O estado com menor desempenho médio em Ciências da Natureza é **{media_cn_uf.iloc[0]['UF_Escola']}** com média de {media_cn_uf.iloc[0]['Media_CN']:.1f} pontos, 
-enquanto a média nacional é de {df['NU_NOTA_CN'].mean():.1f} pontos.
+enquanto a média nacional é de {df['Nota_Ciencias_Natureza'].mean():.1f} pontos.
 
 **Possíveis interpretações:**
 - Diferenças na qualidade do ensino de ciências entre estados
