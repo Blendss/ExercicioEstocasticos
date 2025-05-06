@@ -367,16 +367,15 @@ st.markdown(f"""
 # =============================================
 # Q15: Estado com menor desempenho em Ciências da Natureza
 # =============================================
-media_cn_uf = df.groupby('UF_Escola')['Nota_Ciencias_Natureza'].mean().sort_values().reset_index()
-uf_menor_cn = media_cn_uf.iloc[0]['UF_Escola']
-media_menor_cn = media_cn_uf.iloc[0]['Nota_Ciencias_Natureza']
-media_nacional_cn = df['Nota_Ciencias_Natureza'].mean()
+st.header("Q15: Estado com menor desempenho médio em Ciências da Natureza")
 
-st.header(f"Q15: Estado com menor desempenho em Ciências da Natureza: {uf_menor_cn}")
+# Calcular a média de CN por estado
+media_cn_uf = df.groupby('UF_Escola')['Nota_Ciencias_Natureza'].mean().sort_values().reset_index()
+media_cn_uf.columns = ['UF_Escola', 'Media_CN']
 
 fig, ax = plt.subplots(figsize=(12, 6))
-sns.barplot(data=media_cn_uf, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
-plt.axhline(y=media_nacional_cn, color='red', linestyle='--', label=f'Média Nacional: {media_nacional_cn:.1f}')
+sns.barplot(data=media_cn_uf, x='UF_Escola', y='Media_CN', palette='viridis')
+plt.axhline(y=df['Nota_Ciencias_Natureza'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["Nota_Ciencias_Natureza"].mean():.1f}')
 plt.title('Desempenho Médio em Ciências da Natureza por Estado')
 plt.xlabel('Estado')
 plt.ylabel('Média de Notas')
@@ -385,8 +384,33 @@ plt.legend()
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com menor desempenho médio em Ciências da Natureza é **{uf_menor_cn}** com média de {media_menor_cn:.1f} pontos, 
-enquanto a média nacional é de {media_nacional_cn:.1f} pontos.
+**Análise:** O estado com menor desempenho médio em Ciências da Natureza é **{media_cn_uf.iloc[0]['UF_Escola']}** com média de {media_cn_uf.iloc[0]['Media_CN']:.1f} pontos, 
+enquanto a média nacional é de {df['Nota_Ciencias_Natureza'].mean():.1f} pontos.
+
+**Possíveis interpretações:**
+- Diferenças na qualidade do ensino de ciências entre estados
+- Disparidades regionais na formação de professores
+- Acesso desigual a recursos educacionais
+- Variações nos currículos estaduais
+""")
+
+# Adicionando uma análise complementar - Distribuição das notas por estado
+st.subheader("Distribuição das Notas de Ciências da Natureza por Estado")
+
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
+plt.xticks(rotation=45)
+plt.title('Distribuição das Notas de Ciências da Natureza por Estado')
+plt.xlabel('Estado')
+plt.ylabel('Nota CN')
+st.pyplot(plt.gcf())
+plt.clf()
+
+st.markdown("""
+**Análise complementar:** O boxplot mostra a distribuição completa das notas por estado, permitindo visualizar:
+- A mediana (linha central)
+- Dispersão das notas (tamanho da caixa)
+- Valores atípicos (pontos acima/baixo dos bigodes)
 """)
 
 # =============================================
