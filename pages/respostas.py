@@ -187,17 +187,44 @@ st.markdown(f"""
 # =============================================
 st.header("Q8: Faixa etária mais comum: 18 anos")
 
+# Mapeamento das faixas etárias
+faixa_etaria_map = {
+    1: 'Menor de 17 anos',
+    2: '17 anos',
+    3: '18 anos',
+    4: '19 anos',
+    5: '20 anos',
+    6: '21 anos',
+    7: '22 anos',
+    8: '23 anos',
+    9: '24 anos',
+    10: '25 anos',
+    11: 'Entre 26 e 30 anos',
+    12: 'Entre 31 e 35 anos',
+    13: 'Entre 36 e 40 anos',
+    14: 'Entre 41 e 45 anos',
+    15: 'Entre 46 e 50 anos',
+    16: 'Entre 51 e 55 anos',
+    17: 'Entre 56 e 60 anos',
+    18: 'Entre 61 e 65 anos',
+    19: 'Entre 66 e 70 anos',
+    20: 'Maior de 70 anos'
+}
+
 idade_counts = df['TP_FAIXA_ETARIA'].value_counts().reset_index()
-idade_counts.columns = ['Idade', 'Count']
+idade_counts.columns = ['Codigo_Faixa', 'Count']
+idade_counts['Faixa_Etaria'] = idade_counts['Codigo_Faixa'].map(faixa_etaria_map)
 
 fig, ax = plt.subplots(figsize=(12, 6))
-sns.barplot(data=idade_counts.head(10), x='Idade', y='Count', palette='viridis')
-plt.title('Distribuição de Participantes por Idade (Top 10)')
+sns.barplot(data=idade_counts.head(10), x='Faixa_Etaria', y='Count', palette='viridis')
+plt.title('Distribuição de Participantes por Faixa Etária (Top 10)')
+plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária mais comum entre os participantes é o grupo {idade_counts.iloc[0]['Idade']}.
+**Resposta confirmada:** A faixa etária mais comum entre os participantes é '{idade_counts.iloc[0]['Faixa_Etaria']}'.
 """)
+
 
 # =============================================
 # Q9: Cor/Raça com maior média CH: Branca
@@ -311,41 +338,80 @@ st.markdown(f"""
 """)
 
 # =============================================
-# Q15: Estado com mais notas zero em CN: SP
+# Q15: Estado com menor desempenho em Ciências da Natureza
 # =============================================
-st.header("Q15: Estado com mais notas zero em CN: SP")
+st.header("Q15: Estado com menor desempenho médio em Ciências da Natureza")
 
-notas_zero_cn = df[df['Nota_Ciencias_Natureza'] == 0]
-notas_zero_uf = notas_zero_cn['UF_Escola'].value_counts().reset_index()
-notas_zero_uf.columns = ['UF_Escola', 'Count']
+# Calcular a média de CN por estado
+media_cn_uf = df.groupby('SG_UF_ESC')['NU_NOTA_CN'].mean().sort_values().reset_index()
+media_cn_uf.columns = ['UF_Escola', 'Media_CN']
 
 fig, ax = plt.subplots(figsize=(12, 6))
-sns.barplot(data=notas_zero_uf, x='UF_Escola', y='Count', palette='viridis')
-plt.title('Número de Notas Zero em Ciências da Natureza por Estado')
+sns.barplot(data=media_cn_uf, x='UF_Escola', y='Media_CN', palette='viridis')
+plt.axhline(y=df['NU_NOTA_CN'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["NU_NOTA_CN"].mean():.1f}')
+plt.title('Desempenho Médio em Ciências da Natureza por Estado')
+plt.xlabel('Estado')
+plt.ylabel('Média de Notas')
 plt.xticks(rotation=45)
+plt.legend()
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com mais notas zero em Ciências da Natureza é '{notas_zero_uf.iloc[0]['UF_Escola']}'.
+**Análise:** O estado com menor desempenho médio em Ciências da Natureza é **{media_cn_uf.iloc[0]['UF_Escola']}** com média de {media_cn_uf.iloc[0]['Media_CN']:.1f} pontos, 
+enquanto a média nacional é de {df['NU_NOTA_CN'].mean():.1f} pontos.
+
+**Possíveis interpretações:**
+- Diferenças na qualidade do ensino de ciências entre estados
+- Disparidades regionais na formação de professores
+- Acesso desigual a recursos educacionais
+- Variações nos currículos estaduais
+""")
+
+# Adicionando uma análise complementar - Distribuição das notas por estado
+st.subheader("Distribuição das Notas de Ciências da Natureza por Estado")
+
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df, x='SG_UF_ESC', y='NU_NOTA_CN', palette='viridis')
+plt.xticks(rotation=45)
+plt.title('Distribuição das Notas de Ciências da Natureza por Estado')
+plt.xlabel('Estado')
+plt.ylabel('Nota CN')
+st.pyplot(plt.gcf())
+plt.clf()
+
+st.markdown("""
+**Análise complementar:** O boxplot mostra a distribuição completa das notas por estado, permitindo visualizar:
+- A mediana (linha central)
+- Dispersão das notas (tamanho da caixa)
+- Valores atípicos (pontos acima/baixo dos bigodes)
 """)
 
 # =============================================
 # Q16: Idade média top 10% Matemática: 4.3
 # =============================================
-st.header("Q16: Idade média top 10% Matemática: 4.3")
+st.header("Q16: Idade média top 10% Matemática")
 
+# Primeiro vamos calcular a idade média do top 10% em Matemática
 top_10_mt = df.nlargest(int(len(df)*0.1), 'Nota_Matematica')
-idade_media_top10 = top_10_mt['NU_IDADE'].mean()
 
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.histplot(top_10_mt['NU_IDADE'], bins=20, kde=True)
-plt.axvline(idade_media_top10, color='red', linestyle='--', label=f'Média: {idade_media_top10:.1f} anos')
-plt.title('Distribuição de Idade no Top 10% em Matemática')
-plt.legend()
+# Criar uma coluna com a descrição da faixa etária
+top_10_mt['Faixa_Etaria_Desc'] = top_10_mt['TP_FAIXA_ETARIA'].map(faixa_etaria_map)
+
+# Calcular a moda (faixa etária mais comum)
+moda_faixa = top_10_mt['Faixa_Etaria_Desc'].mode()[0]
+
+# Contagem por faixa etária
+faixa_counts = top_10_mt['Faixa_Etaria_Desc'].value_counts().reset_index()
+faixa_counts.columns = ['Faixa_Etaria', 'Count']
+
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=faixa_counts, x='Faixa_Etaria', y='Count', palette='viridis', order=faixa_counts['Faixa_Etaria'])
+plt.title('Distribuição por Faixa Etária no Top 10% em Matemática')
+plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A idade média do top 10% em Matemática é {idade_media_top10:.1f} anos.
+**Resposta confirmada:** A faixa etária mais comum no top 10% em Matemática é '{moda_faixa}'.
 """)
 
 # =============================================
@@ -539,18 +605,21 @@ st.markdown(f"""
 # =============================================
 # Q27: Faixa etária com maior média LC: Menor de 17 anos
 # =============================================
-st.header("Q27: Faixa etária com maior média LC: Menor de 17 anos")
+st.header("Q27: Faixa etária com maior média LC")
 
-df['Faixa_Etaria'] = pd.cut(df['NU_IDADE'], bins=[0, 17, 18, 19, 20, 30, 100], labels=['<17', '17', '18', '19', '20-30', '>30'])
-media_lc_idade = df.groupby('Faixa_Etaria')['Nota_Linguagens'].mean().sort_values(ascending=False).reset_index()
+# Agrupar por faixa etária e calcular a média de Linguagens
+media_lc_faixa = df.groupby('TP_FAIXA_ETARIA')['Nota_Linguagens'].mean().reset_index()
+media_lc_faixa['Faixa_Etaria'] = media_lc_faixa['TP_FAIXA_ETARIA'].map(faixa_etaria_map)
+media_lc_faixa = media_lc_faixa.sort_values('Nota_Linguagens', ascending=False)
 
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=media_lc_idade, x='Faixa_Etaria', y='Nota_Linguagens', palette='viridis')
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.barplot(data=media_lc_faixa, x='Faixa_Etaria', y='Nota_Linguagens', palette='viridis')
 plt.title('Média de Linguagens por Faixa Etária')
+plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária com maior média em Linguagens é '{media_lc_idade.iloc[0]['Faixa_Etaria']}'.
+**Resposta confirmada:** A faixa etária com maior média em Linguagens é '{media_lc_faixa.iloc[0]['Faixa_Etaria']}'.
 """)
 
 # =============================================
