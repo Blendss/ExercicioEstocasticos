@@ -165,37 +165,6 @@ st.markdown(
 )
 
 # ==========================
-# GRÁFICO 3: Notas por Cor/Raça (Violin plot)
-# ==========================
-st.markdown("## 🎨 Distribuição de Notas por Cor/Raça")
-materia_3 = st.selectbox(
-    "Matéria para o gráfico de violino:", 
-    options=[
-        "Nota_Matematica", "Nota_Linguagens", "Nota_Ciencias_Humanas", 
-        "Nota_Ciencias_Natureza", "Nota_Redacao"
-    ],
-    format_func=lambda x: x.replace("Nota_", "").replace("_", " "),
-    key="materia_violin"
-)
-plt.figure(figsize=(10,5))
-sns.violinplot(
-    data=df_filtrado,
-    x="Cor_Raca",
-    y=materia_3,
-    order=sorted(df_filtrado["Cor_Raca"].unique())
-)
-plt.xlabel("Cor/Raça")
-plt.ylabel(materia_3.replace("Nota_", "").replace("_", " "))
-plt.title(f"Distribuição de Notas de {materia_3.replace('Nota_', '').replace('_', ' ')} por Cor/Raça")
-st.pyplot(plt.gcf())
-plt.clf()
-
-st.markdown(
-    "**Análise:** As diferenças nas distribuições indicam que estudantes autodeclarados pretos e pardos enfrentam maiores desafios, "
-    "possivelmente refletindo desigualdades históricas no acesso a uma educação de qualidade."
-)
-
-# ==========================
 # GRÁFICO 4: Média de Notas por Estado com Seletor de Matéria
 # ==========================
 st.markdown("## 📍 Média das Notas por UF")
