@@ -725,60 +725,87 @@ st.markdown(f"""
 # =============================================
 st.header("Q29: Proporção de notas 1000 em Redação por tipo de escola")
 
-# Mapeamento dos tipos de escola
-tipo_escola_map = {
-    1: 'Não Respondeu',
-    2: 'Pública',
-    3: 'Exterior',
-    4: 'Privada'
-}
+try:
+    # Mapeamento dos tipos de escola
+    tipo_escola_map = {
+        1: 'Não Respondeu',
+        2: 'Pública',
+        3: 'Exterior',
+        4: 'Privada'
+    }
 
-# Filtrar notas 1000
-notas_1000 = df[df['Nota_Redacao'] == 1000]
+    # Verificar se as colunas necessárias existem
+    if 'Nota_Redacao' not in df.columns or 'TP_ESCOLA' not in df.columns:
+        st.error("Colunas necessárias não encontradas no DataFrame. Verifique os nomes das colunas.")
+        st.write("Colunas disponíveis:", list(df.columns))
+    else:
+        # Filtrar notas 1000
+        notas_1000 = df[df['Nota_Redacao'] == 1000]
+        
+        # Verificar se há dados
+        if len(notas_1000) == 0:
+            st.warning("Nenhuma nota 1000 encontrada nos dados.")
+        else:
+            # Calcular totais e notas máximas por categoria
+            resultados = []
+            for codigo, tipo in tipo_escola_map.items():
+                total = len(df[df['TP_ESCOLA'] == codigo])
+                total_1000 = len(notas_1000[notas_1000['TP_ESCOLA'] == codigo])
+                percentual = (total_1000 / total) * 100 if total > 0 else 0
+                resultados.append({
+                    'Tipo Escola': tipo,
+                    'Total Alunos': total,
+                    'Notas 1000': total_1000,
+                    'Percentual': percentual
+                })
 
-# Calcular totais e notas máximas por categoria
-resultados = []
-for codigo, tipo in tipo_escola_map.items():
-    total = len(df[df['TP_ESCOLA'] == codigo])
-    total_1000 = len(notas_1000[notas_1000['TP_ESCOLA'] == codigo])
-    percentual = (total_1000 / total) * 100 if total > 0 else 0
-    resultados.append({
-        'Tipo Escola': tipo,
-        'Total Alunos': total,
-        'Notas 1000': total_1000,
-        'Percentual': percentual
-    })
+            df_resultados = pd.DataFrame(resultados)
 
-df_resultados = pd.DataFrame(resultados)
+            # Criar figura com tamanho adequado
+            plt.figure(figsize=(10, 6))
+            
+            # Gráfico principal
+            ax = sns.barplot(data=df_resultados, x='Tipo Escola', y='Percentual', 
+                            palette='Set2', order=tipo_escola_map.values())
+            plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola', pad=15)
+            plt.ylabel('Percentual (%)')
+            plt.xlabel('')
+            plt.xticks(rotation=45)
+            
+            # Ajustar layout para evitar cortes
+            plt.tight_layout()
+            
+            # Mostrar gráfico no Streamlit
+            st.pyplot(plt.gcf())
+            plt.close()
 
-# Gráfico principal
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=df_resultados, x='Tipo Escola', y='Percentual', 
-            palette='Set2', order=tipo_escola_map.values())
-plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola', pad=15)
-plt.ylabel('Percentual (%)')
-plt.xlabel('')
-plt.xticks(rotation=45)
-st.pyplot(fig)
+            # Tabela detalhada
+            st.markdown("**Detalhamento por categoria:**")
+            st.dataframe(df_resultados.style.format({
+                'Total Alunos': '{:,}',
+                'Notas 1000': '{:,}',
+                'Percentual': '{:.6f}%'
+            }), hide_index=True)
 
-# Tabela detalhada
-st.markdown("**Detalhamento por categoria:**")
-st.dataframe(df_resultados.style.format({
-    'Total Alunos': '{:,}',
-    'Notas 1000': '{:,}',
-    'Percentual': '{:.6f}%'
-}), hide_index=True)
+            # Análise comparativa (apenas se houver dados suficientes)
+            if len(df_resultados) >= 2:
+                publica = df_resultados[df_resultados['Tipo Escola'] == 'Pública']['Percentual'].values[0]
+                privada = df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]
+                
+                if publica > 0:
+                    razao = privada / publica
+                    st.markdown(f"""
+                    **Análise Comparativa:**
+                    - Alunos de escolas privadas têm {razao:.1f}x mais chances de tirar 1000 na redação
+                    - Diferença absoluta: {privada - publica:.4f} pontos percentuais
+                    """)
+                else:
+                    st.markdown("**Análise Comparativa:** Não foi possível calcular a razão (divisão por zero)")
 
-st.markdown(f"""
-**Principais conclusões:**
-1. A proporção de notas 1000 em escolas privadas ({df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]:.6f}%) é aproximadamente {int(df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]/df_resultados[df_resultados['Tipo Escola'] == 'Pública']['Percentual'].values[0]):,}× maior que em escolas públicas
-2. Escolas no exterior apresentam {df_resultados[df_resultados['Tipo Escola'] == 'Exterior']['Notas 1000'].values[0]:,} notas máximas
-3. Entre os que não responderam, {df_resultados[df_resultados['Tipo Escola'] == 'Não Respondeu']['Notas 1000'].values[0]:,} alcançaram nota máxima
-
-**Limitações:**  
-- Análise exclui participantes que não informaram o tipo de escola (se houver)
-- Percentuais muito baixos podem ser sensíveis a pequenas variações amostrais
-""")
+except Exception as e:
+    st.error("Ocorreu um erro ao processar os dados:")
+    st.error(str(e))
+    st.write("Por favor, verifique os dados e tente novamente.")
 
 # =============================================
 # Q30: Estado com maior diferença pública x privada (MT): MG
