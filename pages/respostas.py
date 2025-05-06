@@ -338,42 +338,53 @@ st.markdown(f"""
 """)
 
 # =============================================
-# Q15: Estado com pior desempenho em Ciências da Natureza
+# Q15: Estado com menor desempenho em Ciências da Natureza
 # =============================================
-st.header("Q15: Qual estado teve a menor média em Ciências da Natureza?")
+st.header("Q15: Estado com menor desempenho médio em Ciências da Natureza")
 
-# Verifica se a coluna existe ou usa alternativa
-uf_column = 'SG_UF_ESC' if 'SG_UF_ESC' in df.columns else 'UF_Escola'  # Verifica nomes alternativos
+# Calcular a média de CN por estado
+media_cn_uf = df.groupby('UF_Escola')['NU_NOTA_CN'].mean().sort_values().reset_index()
+media_cn_uf.columns = ['UF_Escola', 'Media_CN']
 
-# Calcula a média de notas por estado
-try:
-    media_estados = df.groupby(uf_column)['NU_NOTA_CN'].mean().sort_values().reset_index()
-    
-    # Gráfico simples de barras
-    plt.figure(figsize=(10, 5))
-    sns.barplot(data=media_estados, x=uf_column, y='NU_NOTA_CN', color='royalblue')
-    plt.title('Média de Ciências da Natureza por Estado')
-    plt.xlabel('Estado')
-    plt.ylabel('Média de Notas')
-    plt.xticks(rotation=45)
-    st.pyplot(plt.gcf())
-    plt.clf()
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.barplot(data=media_cn_uf, x='UF_Escola', y='Media_CN', palette='viridis')
+plt.axhline(y=df['NU_NOTA_CN'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["NU_NOTA_CN"].mean():.1f}')
+plt.title('Desempenho Médio em Ciências da Natureza por Estado')
+plt.xlabel('Estado')
+plt.ylabel('Média de Notas')
+plt.xticks(rotation=45)
+plt.legend()
+st.pyplot(fig)
 
-    # Resultado
-    pior_estado = media_estados.iloc[0][uf_column]
-    pior_media = media_estados.iloc[0]['NU_NOTA_CN']
-    media_nacional = df['NU_NOTA_CN'].mean()
+st.markdown(f"""
+**Análise:** O estado com menor desempenho médio em Ciências da Natureza é **{media_cn_uf.iloc[0]['UF_Escola']}** com média de {media_cn_uf.iloc[0]['Media_CN']:.1f} pontos, 
+enquanto a média nacional é de {df['NU_NOTA_CN'].mean():.1f} pontos.
 
-    st.markdown(f"""
-    **Resultado:**  
-    O estado com a menor média foi **{pior_estado}** com **{pior_media:.1f} pontos**.  
-    A média nacional foi de **{media_nacional:.1f} pontos**.
-    """)
+**Possíveis interpretações:**
+- Diferenças na qualidade do ensino de ciências entre estados
+- Disparidades regionais na formação de professores
+- Acesso desigual a recursos educacionais
+- Variações nos currículos estaduais
+""")
 
-except KeyError as e:
-    st.error(f"Erro: Coluna não encontrada. Colunas disponíveis: {list(df.columns)}")
-    st.error(str(e))
+# Adicionando uma análise complementar - Distribuição das notas por estado
+st.subheader("Distribuição das Notas de Ciências da Natureza por Estado")
 
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=df, x='SG_UF_ESC', y='NU_NOTA_CN', palette='viridis')
+plt.xticks(rotation=45)
+plt.title('Distribuição das Notas de Ciências da Natureza por Estado')
+plt.xlabel('Estado')
+plt.ylabel('Nota CN')
+st.pyplot(plt.gcf())
+plt.clf()
+
+st.markdown("""
+**Análise complementar:** O boxplot mostra a distribuição completa das notas por estado, permitindo visualizar:
+- A mediana (linha central)
+- Dispersão das notas (tamanho da caixa)
+- Valores atípicos (pontos acima/baixo dos bigodes)
+""")
 
 # =============================================
 # Q16: Idade média top 10% Matemática: 4.3
