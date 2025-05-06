@@ -371,7 +371,7 @@ enquanto a média nacional é de {df['Nota_Ciencias_Natureza'].mean():.1f} ponto
 st.subheader("Distribuição das Notas de Ciências da Natureza por Estado")
 
 plt.figure(figsize=(12, 6))
-sns.boxplot(data=df, x='SG_UF_ESC', y='NU_NOTA_CN', palette='viridis')
+sns.boxplot(data=df, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
 plt.xticks(rotation=45)
 plt.title('Distribuição das Notas de Ciências da Natureza por Estado')
 plt.xlabel('Estado')
