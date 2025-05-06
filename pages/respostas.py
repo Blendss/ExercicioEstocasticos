@@ -472,9 +472,6 @@ st.markdown(f"""
 # =============================================
 # Q20: Como a escolaridade dos pais afeta a nota de redação?
 # =============================================
-st.header("Q20: Como a escolaridade dos pais afeta a nota de redação?")
-
-# Mapeamento oficial conforme documentação
 escolaridade_map = {
     'A': 'Nunca estudou',
     'B': 'Fundamental (1º-5º) incompleto',
@@ -486,11 +483,9 @@ escolaridade_map = {
     'H': 'Não sabe'
 }
 
-# Criar colunas com descrições oficiais
 df['Escolaridade_Pai'] = df['Q001'].map(escolaridade_map)
 df['Escolaridade_Mae'] = df['Q002'].map(escolaridade_map)
 
-# Ordem correta para visualização
 ordem_escolaridade = [
     'Nunca estudou',
     'Fundamental (1º-5º) incompleto',
@@ -502,11 +497,11 @@ ordem_escolaridade = [
     'Não sabe'
 ]
 
-# Calcular médias
 media_redacao_pai = df.groupby('Escolaridade_Pai')['Nota_Redacao'].mean().reindex(ordem_escolaridade).reset_index()
 media_redacao_mae = df.groupby('Escolaridade_Mae')['Nota_Redacao'].mean().reindex(ordem_escolaridade).reset_index()
 
-# Gráfico comparativo
+st.header("Q20: Como a escolaridade dos pais afeta a nota de redação?")
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
 
 sns.barplot(data=media_redacao_pai, x='Escolaridade_Pai', y='Nota_Redacao', 
@@ -526,7 +521,6 @@ ax2.tick_params(axis='x', rotation=55)
 plt.tight_layout()
 st.pyplot(fig)
 
-# Cálculo das diferenças (excluindo "Não sabe")
 dados_validos_pai = media_redacao_pai[media_redacao_pai['Escolaridade_Pai'] != 'Não sabe']
 dados_validos_mae = media_redacao_mae[media_redacao_mae['Escolaridade_Mae'] != 'Não sabe']
 
@@ -534,41 +528,21 @@ diferenca_pai = dados_validos_pai['Nota_Redacao'].max() - dados_validos_pai['Not
 diferenca_mae = dados_validos_mae['Nota_Redacao'].max() - dados_validos_mae['Nota_Redacao'].min()
 
 st.markdown(f"""
-**Principais achados:**
-- A diferença entre extremos é de **{diferenca_pai:.1f} pontos** para escolaridade paterna
-- A diferença entre extremos é de **{diferenca_mae:.1f} pontos** para escolaridade materna
-- Cada nível educacional completo dos pais representa em média **{(diferenca_mae/7):.1f} pontos** a mais na redação
-
-**Destaques:**
-1. O salto mais significativo ocorre entre pais com:
-   - Ensino Médio completo (E) → Superior completo (F)
-2. A escolaridade materna mostra maior impacto nos níveis:
-   - Fundamental completo (C) → Fundamental (6º-9º) completo (D)
-   - Superior completo (F) → Pós-graduação (G)
+**Resposta confirmada:**
+- Diferença entre extremos (pai): {diferenca_pai:.1f} pontos
+- Diferença entre extremos (mãe): {diferenca_mae:.1f} pontos
+- Impacto médio por nível educacional: {(diferenca_mae/7):.1f} pontos
 """)
-
-# Análise adicional: Comparação direta pai vs mãe
-fig2, ax = plt.subplots(figsize=(12, 6))
-sns.lineplot(data=media_redacao_pai, x=range(len(ordem_escolaridade)), y='Nota_Redacao', 
-             marker='o', label='Pai', color='blue')
-sns.lineplot(data=media_redacao_mae, x=range(len(ordem_escolaridade)), y='Nota_Redacao', 
-             marker='o', label='Mãe', color='orange')
-plt.xticks(range(len(ordem_escolaridade)), ordem_escolaridade, rotation=55)
-plt.title('Comparação Direta: Impacto da Escolaridade dos Pais na Redação')
-plt.ylabel('Média da Nota de Redação')
-plt.xlabel('Nível de Escolaridade')
-plt.grid(True, alpha=0.3)
-st.pyplot(fig2)
 
 # =============================================
 # Q21: Mediana Redação por raça
 # =============================================
-st.header("Q21: Mediana Redação por raça")
-
 mediana_redacao_raca = df.groupby('Cor_Raca')['Nota_Redacao'].median().sort_values(ascending=False).reset_index()
 mediana_redacao_raca['Cor_Raca'] = mediana_redacao_raca['Cor_Raca'].map({
     0: 'Não declarado', 1: 'Branca', 2: 'Preta', 3: 'Parda', 4: 'Amarela', 5: 'Indígena'
 })
+
+st.header("Q21: Mediana Redação por raça")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=mediana_redacao_raca, x='Cor_Raca', y='Nota_Redacao', palette='Set3')
@@ -576,22 +550,34 @@ plt.title('Mediana de Redação por Cor/Raça')
 plt.xticks(rotation=45)
 st.pyplot(fig)
 
-st.markdown("""
+# Extrair valores para cada categoria
+medianas = {
+    'Amarela': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Amarela']['Nota_Redacao'].values[0],
+    'Branca': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Branca']['Nota_Redacao'].values[0],
+    'Indígena': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Indígena']['Nota_Redacao'].values[0],
+    'Parda': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Parda']['Nota_Redacao'].values[0],
+    'Preta': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Preta']['Nota_Redacao'].values[0],
+    'Não declarado': mediana_redacao_raca[mediana_redacao_raca['Cor_Raca'] == 'Não declarado']['Nota_Redacao'].values[0]
+}
+
+st.markdown(f"""
 **Resposta confirmada:** As medianas por raça são:
-- Amarela: 520
-- Branca: 560
-- Indígena: 420
-- Parda: 500
-- Preta: 480
-- Não declarado: 540
+- Amarela: {medianas['Amarela']:.0f}
+- Branca: {medianas['Branca']:.0f}
+- Indígena: {medianas['Indígena']:.0f}
+- Parda: {medianas['Parda']:.0f}
+- Preta: {medianas['Preta']:.0f}
+- Não declarado: {medianas['Não declarado']:.0f}
 """)
 
 # =============================================
-# Q22: Maior desvio padrão em CH: PI
+# Q22: Maior desvio padrão em CH
 # =============================================
-st.header("Q22: Maior desvio padrão em CH: PI")
-
 desvio_ch_uf = df.groupby('UF_Escola')['Nota_Ciencias_Humanas'].std().sort_values(ascending=False).reset_index()
+uf_maior_desvio_ch = desvio_ch_uf.iloc[0]['UF_Escola']
+valor_desvio_ch = desvio_ch_uf.iloc[0]['Nota_Ciencias_Humanas']
+
+st.header(f"Q22: Maior desvio padrão em CH: {uf_maior_desvio_ch}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=desvio_ch_uf, x='UF_Escola', y='Nota_Ciencias_Humanas', palette='viridis')
@@ -600,17 +586,19 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com maior desvio padrão em Ciências Humanas é '{desvio_ch_uf.iloc[0]['UF_Escola']}'.
+**Resposta confirmada:** O estado com maior desvio padrão em Ciências Humanas é '{uf_maior_desvio_ch}' com {valor_desvio_ch:.2f}.
 """)
 
 # =============================================
 # Q23: Renda mais comum top 5% Redação
 # =============================================
-st.header("Q23: Renda mais comum top 5% Redação")
-
 top_5_redacao = df.nlargest(int(len(df)*0.05), 'Nota_Redacao')
 renda_top5_counts = top_5_redacao['Renda_Familiar'].value_counts().reset_index()
 renda_top5_counts.columns = ['Renda_Familiar', 'Count']
+renda_mais_comum_top5 = renda_top5_counts.iloc[0]['Renda_Familiar']
+count_renda_top5 = renda_top5_counts.iloc[0]['Count']
+
+st.header(f"Q23: Renda mais comum top 5% Redação: {renda_mais_comum_top5}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=renda_top5_counts, x='Renda_Familiar', y='Count', palette='viridis')
@@ -619,57 +607,61 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A renda mais comum entre o top 5% em Redação é '{renda_top5_counts.iloc[0]['Renda_Familiar']}'.
+**Resposta confirmada:** A renda mais comum entre o top 5% em Redação é '{renda_mais_comum_top5}' com {count_renda_top5:,} participantes.
 """)
 
 # =============================================
-# Q24: % notas 1000 Redação: 0.0010%
+# Q24: % notas 1000 Redação
 # =============================================
-st.header("Q24: % notas 1000 Redação: 0.0010%")
-
 total = len(df)
 notas_1000 = len(df[df['Nota_Redacao'] == 1000])
-percentual = (notas_1000 / total) * 100
+percentual_1000 = (notas_1000 / total) * 100
+
+st.header(f"Q24: % notas 1000 Redação: {percentual_1000:.4f}%")
 
 fig, ax = plt.subplots(figsize=(8, 5))
-plt.pie([percentual, 100-percentual], labels=['Nota 1000', 'Outras'], autopct='%1.4f%%', colors=['#ff9999','#66b3ff'])
+plt.pie([percentual_1000, 100-percentual_1000], labels=['Nota 1000', 'Outras'], autopct='%1.4f%%', colors=['#ff9999','#66b3ff'])
 plt.title('Proporção de Notas 1000 em Redação')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O percentual de notas 1000 em Redação é {percentual:.4f}%.
+**Resposta confirmada:** O percentual de notas 1000 em Redação é {percentual_1000:.4f}%.
 """)
 
 # =============================================
 # Q25: Média MT por tipo de escola
 # =============================================
-st.header("Q25: Média MT por tipo de escola")
-
 media_mt_escola = df.groupby('TP_ESCOLA')['Nota_Matematica'].mean().reset_index()
 media_mt_escola['TP_ESCOLA'] = media_mt_escola['TP_ESCOLA'].map({
     1: 'Não Respondeu', 2: 'Pública', 3: 'Exterior', 4: 'Privada'
 })
+media_publica_mt = media_mt_escola[media_mt_escola['TP_ESCOLA'] == 'Pública']['Nota_Matematica'].values[0]
+media_privada_mt = media_mt_escola[media_mt_escola['TP_ESCOLA'] == 'Privada']['Nota_Matematica'].values[0]
+
+st.header("Q25: Média MT por tipo de escola")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_mt_escola, x='TP_ESCOLA', y='Nota_Matematica', palette='Set2')
 plt.title('Média de Matemática por Tipo de Escola')
 st.pyplot(fig)
 
-st.markdown("""
+st.markdown(f"""
 **Resposta confirmada:** As médias por tipo de escola são:
-- Pública: 514.20
-- Privada sem bolsa: 625.59
+- Pública: {media_publica_mt:.2f}
+- Privada: {media_privada_mt:.2f}
 """)
 
 # =============================================
-# Q26: Top 1% CN por sexo: Masc: 55.3% - Fem: 44.7%
+# Q26: Top 1% CN por sexo
 # =============================================
-st.header("Q26: Top 1% CN por sexo: Masc: 55.3% - Fem: 44.7%")
-
 top_1_cn = df.nlargest(int(len(df)*0.01), 'Nota_Ciencias_Natureza')
 sexo_top1_counts = top_1_cn['Sexo'].value_counts(normalize=True).reset_index()
 sexo_top1_counts.columns = ['Sexo', 'Percentual']
 sexo_top1_counts['Percentual'] = sexo_top1_counts['Percentual'] * 100
+percent_masc = sexo_top1_counts[sexo_top1_counts['Sexo'] == 'M']['Percentual'].values[0]
+percent_fem = sexo_top1_counts[sexo_top1_counts['Sexo'] == 'F']['Percentual'].values[0]
+
+st.header(f"Q26: Top 1% CN por sexo: Masc: {percent_masc:.1f}% - Fem: {percent_fem:.1f}%")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=sexo_top1_counts, x='Sexo', y='Percentual', palette='coolwarm')
@@ -678,19 +670,20 @@ st.pyplot(fig)
 
 st.markdown(f"""
 **Resposta confirmada:** A distribuição no top 1% em Ciências da Natureza é:
-- Masculino: {sexo_top1_counts[sexo_top1_counts['Sexo'] == 'M']['Percentual'].values[0]:.1f}%
-- Feminino: {sexo_top1_counts[sexo_top1_counts['Sexo'] == 'F']['Percentual'].values[0]:.1f}%
+- Masculino: {percent_masc:.1f}%
+- Feminino: {percent_fem:.1f}%
 """)
 
 # =============================================
-# Q27: Faixa etária com maior média LC: Menor de 17 anos
+# Q27: Faixa etária com maior média LC
 # =============================================
-st.header("Q27: Faixa etária com maior média LC")
-
-# Agrupar por faixa etária e calcular a média de Linguagens
 media_lc_faixa = df.groupby('TP_FAIXA_ETARIA')['Nota_Linguagens'].mean().reset_index()
 media_lc_faixa['Faixa_Etaria'] = media_lc_faixa['TP_FAIXA_ETARIA'].map(faixa_etaria_map)
 media_lc_faixa = media_lc_faixa.sort_values('Nota_Linguagens', ascending=False)
+faixa_maior_media_lc = media_lc_faixa.iloc[0]['Faixa_Etaria']
+maior_media_lc_valor = media_lc_faixa.iloc[0]['Nota_Linguagens']
+
+st.header(f"Q27: Faixa etária com maior média LC: {faixa_maior_media_lc}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_lc_faixa, x='Faixa_Etaria', y='Nota_Linguagens', palette='viridis')
@@ -699,15 +692,17 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária com maior média em Linguagens é '{media_lc_faixa.iloc[0]['Faixa_Etaria']}'.
+**Resposta confirmada:** A faixa etária com maior média em Linguagens é '{faixa_maior_media_lc}' com {maior_media_lc_valor:.2f} pontos.
 """)
 
 # =============================================
-# Q28: Estado com maior média em CN: DF
+# Q28: Estado com maior média em CN
 # =============================================
-st.header("Q28: Estado com maior média em CN: DF")
-
 media_cn_uf = df.groupby('UF_Escola')['Nota_Ciencias_Natureza'].mean().sort_values(ascending=False).reset_index()
+uf_maior_media_cn = media_cn_uf.iloc[0]['UF_Escola']
+maior_media_cn_valor = media_cn_uf.iloc[0]['Nota_Ciencias_Natureza']
+
+st.header(f"Q28: Estado com maior média em CN: {uf_maior_media_cn}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_cn_uf, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
@@ -716,16 +711,13 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com maior média em Ciências da Natureza é '{media_cn_uf.iloc[0]['UF_Escola']}'.
+**Resposta confirmada:** O estado com maior média em Ciências da Natureza é '{uf_maior_media_cn}' com {maior_media_cn_valor:.2f} pontos.
 """)
 
 # =============================================
 # Q29: Proporção de notas 1000 em Redação por tipo de escola
 # =============================================
-st.header("Q29: Proporção de notas 1000 em Redação por tipo de escola")
-
 try:
-    # Mapeamento dos tipos de escola
     tipo_escola_map = {
         1: 'Não Respondeu',
         2: 'Pública',
@@ -733,84 +725,51 @@ try:
         4: 'Privada'
     }
 
-    # Verificar se as colunas necessárias existem
-    if 'Nota_Redacao' not in df.columns or 'TP_ESCOLA' not in df.columns:
-        st.error("Colunas necessárias não encontradas no DataFrame. Verifique os nomes das colunas.")
-        st.write("Colunas disponíveis:", list(df.columns))
+    notas_1000 = df[df['Nota_Redacao'] == 1000]
+    
+    if len(notas_1000) == 0:
+        st.warning("Nenhuma nota 1000 encontrada nos dados.")
     else:
-        # Filtrar notas 1000
-        notas_1000 = df[df['Nota_Redacao'] == 1000]
-        
-        # Verificar se há dados
-        if len(notas_1000) == 0:
-            st.warning("Nenhuma nota 1000 encontrada nos dados.")
-        else:
-            # Calcular totais e notas máximas por categoria
-            resultados = []
-            for codigo, tipo in tipo_escola_map.items():
-                total = len(df[df['TP_ESCOLA'] == codigo])
-                total_1000 = len(notas_1000[notas_1000['TP_ESCOLA'] == codigo])
-                percentual = (total_1000 / total) * 100 if total > 0 else 0
-                resultados.append({
-                    'Tipo Escola': tipo,
-                    'Total Alunos': total,
-                    'Notas 1000': total_1000,
-                    'Percentual': percentual
-                })
+        resultados = []
+        for codigo, tipo in tipo_escola_map.items():
+            total = len(df[df['TP_ESCOLA'] == codigo])
+            total_1000 = len(notas_1000[notas_1000['TP_ESCOLA'] == codigo])
+            percentual = (total_1000 / total) * 100 if total > 0 else 0
+            resultados.append({
+                'Tipo Escola': tipo,
+                'Total Alunos': total,
+                'Notas 1000': total_1000,
+                'Percentual': percentual
+            })
 
-            df_resultados = pd.DataFrame(resultados)
+        df_resultados = pd.DataFrame(resultados)
+        percent_publica = df_resultados[df_resultados['Tipo Escola'] == 'Pública']['Percentual'].values[0]
+        percent_privada = df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]
 
-            # Criar figura com tamanho adequado
-            plt.figure(figsize=(10, 6))
-            
-            # Gráfico principal
-            ax = sns.barplot(data=df_resultados, x='Tipo Escola', y='Percentual', 
-                            palette='Set2', order=tipo_escola_map.values())
-            plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola', pad=15)
-            plt.ylabel('Percentual (%)')
-            plt.xlabel('')
-            plt.xticks(rotation=45)
-            
-            # Ajustar layout para evitar cortes
-            plt.tight_layout()
-            
-            # Mostrar gráfico no Streamlit
-            st.pyplot(plt.gcf())
-            plt.close()
+        st.header(f"Q29: Proporção nota 1000 Redação: Pública: {percent_publica:.4f}% | Privada: {percent_privada:.4f}%")
 
-            # Tabela detalhada
-            st.markdown("**Detalhamento por categoria:**")
-            st.dataframe(df_resultados.style.format({
-                'Total Alunos': '{:,}',
-                'Notas 1000': '{:,}',
-                'Percentual': '{:.6f}%'
-            }), hide_index=True)
+        plt.figure(figsize=(10, 6))
+        ax = sns.barplot(data=df_resultados, x='Tipo Escola', y='Percentual', 
+                        palette='Set2', order=tipo_escola_map.values())
+        plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola', pad=15)
+        plt.ylabel('Percentual (%)')
+        plt.xlabel('')
+        plt.xticks(rotation=45)
+        st.pyplot(plt.gcf())
+        plt.close()
 
-            # Análise comparativa (apenas se houver dados suficientes)
-            if len(df_resultados) >= 2:
-                publica = df_resultados[df_resultados['Tipo Escola'] == 'Pública']['Percentual'].values[0]
-                privada = df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]
-                
-                if publica > 0:
-                    razao = privada / publica
-                    st.markdown(f"""
-                    **Análise Comparativa:**
-                    - Alunos de escolas privadas têm {razao:.1f}x mais chances de tirar 1000 na redação
-                    - Diferença absoluta: {privada - publica:.4f} pontos percentuais
-                    """)
-                else:
-                    st.markdown("**Análise Comparativa:** Não foi possível calcular a razão (divisão por zero)")
+        st.markdown(f"""
+        **Resposta confirmada:** 
+        - Pública: {percent_publica:.4f}%
+        - Privada: {percent_privada:.4f}%
+        """)
 
 except Exception as e:
-    st.error("Ocorreu um erro ao processar os dados:")
-    st.error(str(e))
-    st.write("Por favor, verifique os dados e tente novamente.")
+    st.error(f"Erro ao processar Q29: {str(e)}")
 
 # =============================================
-# Q30: Estado com maior diferença pública x privada (MT): MG
+# Q30: Estado com maior diferença pública x privada (MT)
 # =============================================
-st.header("Q30: Estado com maior diferença pública x privada (MT): MG")
-
 publicas = df[df['TP_ESCOLA'] == 2]
 privadas = df[df['TP_ESCOLA'] == 4]
 
@@ -820,6 +779,10 @@ media_privada_uf = privadas.groupby('UF_Escola')['Nota_Matematica'].mean().reset
 diferencas = pd.merge(media_privada_uf, media_publica_uf, on='UF_Escola', suffixes=('_privada', '_publica'))
 diferencas['Diferenca'] = diferencas['Nota_Matematica_privada'] - diferencas['Nota_Matematica_publica']
 diferencas = diferencas.sort_values('Diferenca', ascending=False)
+uf_maior_diferenca = diferencas.iloc[0]['UF_Escola']
+maior_diferenca_valor = diferencas.iloc[0]['Diferenca']
+
+st.header(f"Q30: Estado com maior diferença pública x privada (MT): {uf_maior_diferenca}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=diferencas, x='UF_Escola', y='Diferenca', palette='viridis')
@@ -828,7 +791,7 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com maior diferença entre escolas públicas e privadas em Matemática é '{diferencas.iloc[0]['UF_Escola']}'.
+**Resposta confirmada:** O estado com maior diferença entre escolas públicas e privadas em Matemática é '{uf_maior_diferenca}' com diferença de {maior_diferenca_valor:.2f} pontos.
 """)
 
 # =============================================
@@ -841,7 +804,7 @@ Este painel apresenta visualizações que confirmam as respostas para as 30 ques
 Cada gráfico foi cuidadosamente construído para validar estatisticamente as respostas fornecidas.
 
 **Observações:**
-1. Algumas respostas podem apresentar pequenas variações devido a arredondamentos ou critérios específicos de cálculo
-2. Todos os gráficos são interativos e podem ser explorados com mais detalhes
-3. Os dados foram filtrados para considerar apenas participantes presentes em todas as provas
+1. Todas as respostas foram calculadas dinamicamente a partir dos dados exibidos nos gráficos
+2. Os resultados refletem a amostra específica de 660 mil participantes
+3. Os dados consideram apenas participantes presentes em todas as provas
 """)
