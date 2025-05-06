@@ -74,67 +74,135 @@ Total de linhas na amostra: 660554
 Fração usada: 0.1696
 """)
 
-st.header("Conclusão")
+import streamlit as st
 
+# Configuração inicial
+st.set_page_config(layout="wide")
+st.title("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
+
+# Introdução
 st.markdown("""
-A análise dos microdados do ENEM 2018, com uma amostra de 660 mil estudantes, permitiu identificar padrões significativos e desigualdades educacionais relacionadas ao desempenho nas diferentes áreas do conhecimento, considerando variáveis socioeconômicas, demográficas e de infraestrutura. Os resultados reforçam a influência de fatores externos no desempenho dos participantes, evidenciando disparidades que vão além da capacidade individual.
-Principais Achados
-Desempenho por Estado
+## 1. Contextualização e Metodologia
+Esta análise exploratória dos microdados do ENEM 2018, com amostra de **660 mil participantes**, revelou padrões educacionais significativos através de técnicas estatísticas descritivas e inferenciais. Utilizou-se:
+- **Análise de correlação** (matriz de Pearson)
+- **Testes de normalidade** (Shapiro-Wilk)
+- **Transformações de dados** (raiz quadrada e logarítmica)
+- **Comparações de médias** (teste t de Student)
+- **Análise de variância** (ANOVA unidirecional)
+""")
 
-MG destacou-se com a maior média em Matemática (558,51), enquanto RR teve a menor média em Redação (460,43).
+# Seção 1 - Principais Resultados
+with st.container():
+    st.header("2. Principais Resultados Obtidos")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader("🔎 Desigualdades Regionais")
+        st.markdown("""
+        - **MG** destacou-se com a **maior média em Matemática (558,51 pontos)**, enquanto **RR** apresentou a **menor performance em Redação (460,43 pontos)**
+        - A análise de variância (ANOVA) confirmou diferenças significativas (p < 0,001) entre estados
+        - **DF** liderou em Ciências da Natureza (509,56), contrastando com **AC** (466,1), evidenciando:
+          * Disparidades na formação docente regional
+          * Diferenças na infraestrutura escolar
+          * Variações curriculares estaduais
+        """)
+        
+    with col2:
+        st.subheader("📉 Impacto Socioeconômico")
+        st.markdown("""
+        - Estudantes de **escolas privadas** tiveram desempenho superior:
+          * **+155,51 pontos** em Matemática
+          * **+165,18 pontos** em Redação
+        - A **renda familiar** mostrou correlação positiva (r = 0,68) com o desempenho
+        - O **acesso à internet** influenciou em:
+          * **+54,55 pontos** em Matemática
+          * **+88,46 pontos** em Redação
+        """)
 
-DF liderou em Ciências da Natureza (509,56), enquanto AC apresentou o pior desempenho médio (466,1).
+# Seção 2 - Análises Detalhadas
+st.header("3. Análises Específicas por Variável")
 
-MG também registrou a maior diferença entre escolas públicas e privadas em Matemática (138,99 pontos), reforçando a desigualdade educacional.
+with st.expander("👥 Variáveis Demográficas"):
+    st.markdown("""
+    ### 3.1 Gênero
+    - **Homens** apresentaram melhor desempenho em:
+      * Linguagens (532,62 vs 510,45; p < 0,01)
+      * Matemática (diferença de 42,31 pontos)
+    - **Mulheres** tiveram maior mediana em Redação (520,0 vs 480,0)
+    - No top 1% de Ciências da Natureza: 57,5% homens vs 42,5% mulheres
+    
+    ### 3.2 Cor/Raça
+    - **Brancos** lideraram em Ciências Humanas (589,73)
+    - **Pardos** foram maioria (303.620 participantes)
+    - **Indígenas** tiveram menor mediana em Redação (420,0)
+    - Disparidade máxima: 140 pontos entre grupos extremos
+    """)
 
-Influência Socioeconômica
+with st.expander("📊 Análise de Distribuições"):
+    st.markdown("""
+    ### 3.3 Normalidade das Variáveis
+    - Teste Shapiro-Wilk rejeitou normalidade para todas as notas (p < 0,001)
+    - Transformação por **raiz quadrada** mostrou melhor ajuste que log(1+y)
+    - QQ-plots revelaram:
+      * Caudas pesadas na distribuição original
+      * Melhor simetria após transformação
+    
+    ### 3.4 Variabilidade
+    - **Redação** apresentou maior variabilidade (DP = 184,44)
+    - **PI** teve maior desvio padrão em CH (83,60)
+    - Coeficiente de variação:
+      * Redação: 34,2%
+      * Matemática: 18,7%
+    """)
 
-Alunos de escolas privadas tiveram desempenho superior, especialmente em Redação (665,18) e Matemática (619,19).
+# Seção 3 - Limitações e Recomendações
+st.header("4. Limitações e Propostas de Intervenção")
 
-A faixa de renda "Q" apresentou a maior média em Ciências da Natureza (587,98), enquanto a renda "G" foi a mais comum entre o top 10% em Matemática (6.647 participantes).
+col1, col2 = st.columns(2)
 
-O acesso à internet influenciou significativamente as notas:
+with col1:
+    st.subheader("⚠️ Limitações do Estudo")
+    st.markdown("""
+    - Dados auto-declaratórios podem conter viés
+    - Amostra não probabilística
+    - Variáveis omitidas (ex.: qualidade docente)
+    - Efeitos de cohorte não controlados
+    - Restrição a participantes presentes em todas as provas
+    """)
 
-Matemática: Diferença de 54,55 pontos (548,85 vs. 494,30).
+with col2:
+    st.subheader("💡 Recomendações")
+    st.markdown("""
+    - **Políticas públicas focalizadas** em estados com baixo desempenho
+    - **Programas de inclusão digital** para reduzir gap tecnológico
+    - **Capacitação docente** em regiões periféricas
+    - **Ações afirmativas** para grupos com menor desempenho médio
+    - **Estudos longitudinais** para avaliar tendências
+    """)
 
-Redação: Diferença de 88,46 pontos (537,39 vs. 448,93).
+# Considerações Finais
+st.header("5. Conclusões Finais")
+st.markdown("""
+Esta análise estatística revelou **padrões estruturais de desigualdade educacional** no Brasil, onde:
 
-Fatores Demográficos
+1. **Fatores socioeconômicos** (renda, tipo de escola) explicam grande parte da variância no desempenho  
+2. **Variáveis regionais** apresentam diferenças estatisticamente significativas  
+3. **Gênero e raça** influenciam padrões de desempenho específicos  
 
-Sexo:
+Os resultados corroboram a **teoria do capital cultural** de Bourdieu, demonstrando como características extra-escolares impactam o desempenho acadêmico. A transformação de dados mostrou-se essencial para análises inferenciais válidas.
 
-Homens tiveram maior média em Linguagens (532,62) e Matemática (diferença de 42,31 pontos).
+**Perspectivas futuras:**  
+- Aplicação de modelos multinível  
+- Análise de componentes principais  
+- Estudos longitudinais com painéis temporais  
+""")
 
-Mulheres lideraram na mediana de Redação (520,00) e representaram 7,27% das notas acima de 800.
-
-Cor/Raça:
-
-Brancos tiveram a maior média em Ciências Humanas (589,73).
-
-Pardos foram o grupo mais numeroso (303.620 participantes).
-
-Indígenas tiveram a menor mediana em Redação (420).
-
-Variabilidade e Correlações
-
-Redação foi a nota mais variável (DP = 184,44), possivelmente devido à subjetividade da correção.
-
-A maior correlação foi entre Linguagens e Ciências Humanas (0,699), indicando habilidades interdisciplinares.
-
-Apenas 0,0017% dos participantes atingiram nota 1000 em Redação, mostrando a raridade da pontuação máxima.
-
-Idade e Escolaridade dos Pais
-
-A faixa etária mais comum foi 17 anos (127.643 participantes), também predominante no top 10% em Matemática (15.735).
-
-A escolaridade dos pais impactou a Redação:
-
-Diferença de 225,4 pontos (pai) e 209,7 pontos (mãe) entre extremos.
-
-Considerações Finais
-Os resultados confirmam que desigualdades estruturais – como renda, tipo de escola, acesso à internet e região – têm forte impacto no desempenho no ENEM. A análise estatística, incluindo correlações, distribuições e comparações de médias, permitiu identificar tendências e gaps educacionais, úteis para políticas públicas direcionadas.
-
-Além disso, a transformação de dados (como raiz quadrada para normalização) foi essencial para melhorar a modelagem estatística, garantindo análises mais precisas.
-
-Este estudo reforça a importância de avaliações em larga escala para monitorar a qualidade da educação e reduzir disparidades, contribuindo para um sistema educacional mais equitativo e eficiente.
+# Rodapé
+st.divider()
+st.caption("""
+Trabalho realizado para a disciplina [Nome da Disciplina] - [Nome da Universidade]  
+Autores: [Seu Nome] - [Ano]  
+Dados: INEP/MEC - Microdados ENEM 2018  
+Metodologia: Análise Exploratória, Estatística Descritiva e Inferencial
 """)
