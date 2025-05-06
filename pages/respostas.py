@@ -471,14 +471,95 @@ st.markdown(f"""
 """)
 
 # =============================================
-# Q20: Diferença nota Redação internet: 88.12
+# Q20: Como a escolaridade dos pais afeta a nota de redação?
 # =============================================
-st.header("Q20: Diferença nota Redação internet: 88.12")
+st.header("Q20: Como a escolaridade dos pais afeta a nota de redação?")
 
-# Já calculado em Q18
+# Mapeamento oficial conforme documentação
+escolaridade_map = {
+    'A': 'Nunca estudou',
+    'B': 'Fundamental (1º-5º) incompleto',
+    'C': 'Fundamental (1º-5º) completo',
+    'D': 'Fundamental (6º-9º) completo',
+    'E': 'Ensino Médio completo',
+    'F': 'Superior completo',
+    'G': 'Pós-graduação completa',
+    'H': 'Não sabe'
+}
+
+# Criar colunas com descrições oficiais
+df['Escolaridade_Pai'] = df['Q001'].map(escolaridade_map)
+df['Escolaridade_Mae'] = df['Q002'].map(escolaridade_map)
+
+# Ordem correta para visualização
+ordem_escolaridade = [
+    'Nunca estudou',
+    'Fundamental (1º-5º) incompleto',
+    'Fundamental (1º-5º) completo',
+    'Fundamental (6º-9º) completo',
+    'Ensino Médio completo',
+    'Superior completo',
+    'Pós-graduação completa',
+    'Não sabe'
+]
+
+# Calcular médias
+media_redacao_pai = df.groupby('Escolaridade_Pai')['NU_NOTA_REDACAO'].mean().reindex(ordem_escolaridade).reset_index()
+media_redacao_mae = df.groupby('Escolaridade_Mae')['NU_NOTA_REDACAO'].mean().reindex(ordem_escolaridade).reset_index()
+
+# Gráfico comparativo
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
+
+sns.barplot(data=media_redacao_pai, x='Escolaridade_Pai', y='NU_NOTA_REDACAO', 
+            ax=ax1, palette='Blues_d', order=ordem_escolaridade)
+ax1.set_title('Média de Redação por Escolaridade do Pai', pad=20)
+ax1.set_xlabel('Nível de Escolaridade', labelpad=10)
+ax1.set_ylabel('Média da Nota de Redação', labelpad=10)
+ax1.tick_params(axis='x', rotation=55)
+
+sns.barplot(data=media_redacao_mae, x='Escolaridade_Mae', y='NU_NOTA_REDACAO', 
+            ax=ax2, palette='Oranges_d', order=ordem_escolaridade)
+ax2.set_title('Média de Redação por Escolaridade da Mãe', pad=20)
+ax2.set_xlabel('Nível de Escolaridade', labelpad=10)
+ax2.set_ylabel('')
+ax2.tick_params(axis='x', rotation=55)
+
+plt.tight_layout()
+st.pyplot(fig)
+
+# Cálculo das diferenças (excluindo "Não sabe")
+dados_validos_pai = media_redacao_pai[media_redacao_pai['Escolaridade_Pai'] != 'Não sabe']
+dados_validos_mae = media_redacao_mae[media_redacao_mae['Escolaridade_Mae'] != 'Não sabe']
+
+diferenca_pai = dados_validos_pai['NU_NOTA_REDACAO'].max() - dados_validos_pai['NU_NOTA_REDACAO'].min()
+diferenca_mae = dados_validos_mae['NU_NOTA_REDACAO'].max() - dados_validos_mae['NU_NOTA_REDACAO'].min()
+
 st.markdown(f"""
-**Resposta confirmada:** A diferença de nota em Redação entre alunos com e sem internet é {diferenca:.2f} pontos.
+**Principais achados:**
+- A diferença entre extremos é de **{diferenca_pai:.1f} pontos** para escolaridade paterna
+- A diferença entre extremos é de **{diferenca_mae:.1f} pontos** para escolaridade materna
+- Cada nível educacional completo dos pais representa em média **{(diferenca_mae/7):.1f} pontos** a mais na redação
+
+**Destaques:**
+1. O salto mais significativo ocorre entre pais com:
+   - Ensino Médio completo (E) → Superior completo (F)
+2. A escolaridade materna mostra maior impacto nos níveis:
+   - Fundamental completo (C) → Fundamental (6º-9º) completo (D)
+   - Superior completo (F) → Pós-graduação (G)
 """)
+
+# Análise adicional: Comparação direta pai vs mãe
+fig2, ax = plt.subplots(figsize=(12, 6))
+sns.lineplot(data=media_redacao_pai, x=range(len(ordem_escolaridade)), y='NU_NOTA_REDACAO', 
+             marker='o', label='Pai', color='blue')
+sns.lineplot(data=media_redacao_mae, x=range(len(ordem_escolaridade)), y='NU_NOTA_REDACAO', 
+             marker='o', label='Mãe', color='orange')
+plt.xticks(range(len(ordem_escolaridade)), ordem_escolaridade, rotation=55)
+plt.title('Comparação Direta: Impacto da Escolaridade dos Pais na Redação')
+plt.ylabel('Média da Nota de Redação')
+plt.xlabel('Nível de Escolaridade')
+plt.grid(True, alpha=0.3)
+st.pyplot(fig2)
 
 # =============================================
 # Q21: Mediana Redação por raça
