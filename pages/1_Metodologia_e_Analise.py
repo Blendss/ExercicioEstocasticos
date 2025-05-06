@@ -83,8 +83,8 @@ st.header("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
 
 # Introdução
 st.markdown("""
-## 1. Contextualização e Metodologia
-Esta análise exploratória dos microdados do ENEM 2018, com amostra de **660 mil participantes**, revelou padrões educacionais significativos através de técnicas estatísticas descritivas e inferenciais. Utilizou-se:
+## 1. Fluxo de trabalho
+Esta análise exploratória dos microdados do ENEM 2018, com amostra de **660 mil participantes**, revelou padrões educacionais significativos através de técnicas de análise exploratória de dados, estatísticas descritivas e inferenciais. Realizou-se:
 - **Remoção de colunas indesejadas**
 - **Limpesa de dados**
 - **Conversão para arquivo menor**
