@@ -721,35 +721,63 @@ st.markdown(f"""
 """)
 
 # =============================================
-# Q29: Proporção nota 1000 Redação: Pública: 0.0001% | Privada: 0.0038%
+# Q29: Proporção de notas 1000 em Redação por tipo de escola
 # =============================================
-st.header("Q29: Proporção nota 1000 Redação por tipo de escola")
+st.header("Q29: Proporção de notas 1000 em Redação por tipo de escola")
 
-notas_1000 = df[df['Nota_Redacao'] == 1000]
-total_publica = len(df[df['TP_ESCOLA'] == 2])
-total_privada = len(df[df['TP_ESCOLA'] == 4])
-
-notas_1000_publica = len(notas_1000[notas_1000['TP_ESCOLA'] == 2])
-notas_1000_privada = len(notas_1000[notas_1000['TP_ESCOLA'] == 4])
-
-percent_publica = (notas_1000_publica / total_publica) * 100
-percent_privada = (notas_1000_privada / total_privada) * 100
-
-data = {
-    'Tipo Escola': ['Pública', 'Privada'],
-    'Percentual': [percent_publica, percent_privada]
+# Mapeamento dos tipos de escola
+tipo_escola_map = {
+    1: 'Não Respondeu',
+    2: 'Pública',
+    3: 'Exterior',
+    4: 'Privada'
 }
-df_percent = pd.DataFrame(data)
 
-fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(data=df_percent, x='Tipo Escola', y='Percentual', palette='Set2')
-plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola')
+# Filtrar notas 1000
+notas_1000 = df[df['Nota_Redacao'] == 1000]
+
+# Calcular totais e notas máximas por categoria
+resultados = []
+for codigo, tipo in tipo_escola_map.items():
+    total = len(df[df['TP_ESCOLA'] == codigo])
+    total_1000 = len(notas_1000[notas_1000['TP_ESCOLA'] == codigo])
+    percentual = (total_1000 / total) * 100 if total > 0 else 0
+    resultados.append({
+        'Tipo Escola': tipo,
+        'Total Alunos': total,
+        'Notas 1000': total_1000,
+        'Percentual': percentual
+    })
+
+df_resultados = pd.DataFrame(resultados)
+
+# Gráfico principal
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.barplot(data=df_resultados, x='Tipo Escola', y='Percentual', 
+            palette='Set2', order=tipo_escola_map.values())
+plt.title('Percentual de Notas 1000 em Redação por Tipo de Escola', pad=15)
+plt.ylabel('Percentual (%)')
+plt.xlabel('')
+plt.xticks(rotation=45)
 st.pyplot(fig)
 
+# Tabela detalhada
+st.markdown("**Detalhamento por categoria:**")
+st.dataframe(df_resultados.style.format({
+    'Total Alunos': '{:,}',
+    'Notas 1000': '{:,}',
+    'Percentual': '{:.6f}%'
+}), hide_index=True)
+
 st.markdown(f"""
-**Resposta confirmada:** 
-- Pública: {percent_publica:.4f}%
-- Privada: {percent_privada:.4f}%
+**Principais conclusões:**
+1. A proporção de notas 1000 em escolas privadas ({df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]:.6f}%) é aproximadamente {int(df_resultados[df_resultados['Tipo Escola'] == 'Privada']['Percentual'].values[0]/df_resultados[df_resultados['Tipo Escola'] == 'Pública']['Percentual'].values[0]):,}× maior que em escolas públicas
+2. Escolas no exterior apresentam {df_resultados[df_resultados['Tipo Escola'] == 'Exterior']['Notas 1000'].values[0]:,} notas máximas
+3. Entre os que não responderam, {df_resultados[df_resultados['Tipo Escola'] == 'Não Respondeu']['Notas 1000'].values[0]:,} alcançaram nota máxima
+
+**Limitações:**  
+- Análise exclui participantes que não informaram o tipo de escola (se houver)
+- Percentuais muito baixos podem ser sensíveis a pequenas variações amostrais
 """)
 
 # =============================================
