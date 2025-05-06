@@ -504,20 +504,20 @@ ordem_escolaridade = [
 ]
 
 # Calcular médias
-media_redacao_pai = df.groupby('Escolaridade_Pai')['NU_NOTA_REDACAO'].mean().reindex(ordem_escolaridade).reset_index()
-media_redacao_mae = df.groupby('Escolaridade_Mae')['NU_NOTA_REDACAO'].mean().reindex(ordem_escolaridade).reset_index()
+media_redacao_pai = df.groupby('Escolaridade_Pai')['Nota_Redacao'].mean().reindex(ordem_escolaridade).reset_index()
+media_redacao_mae = df.groupby('Escolaridade_Mae')['Nota_Redacao'].mean().reindex(ordem_escolaridade).reset_index()
 
 # Gráfico comparativo
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
 
-sns.barplot(data=media_redacao_pai, x='Escolaridade_Pai', y='NU_NOTA_REDACAO', 
+sns.barplot(data=media_redacao_pai, x='Escolaridade_Pai', y='Nota_Redacao', 
             ax=ax1, palette='Blues_d', order=ordem_escolaridade)
 ax1.set_title('Média de Redação por Escolaridade do Pai', pad=20)
 ax1.set_xlabel('Nível de Escolaridade', labelpad=10)
 ax1.set_ylabel('Média da Nota de Redação', labelpad=10)
 ax1.tick_params(axis='x', rotation=55)
 
-sns.barplot(data=media_redacao_mae, x='Escolaridade_Mae', y='NU_NOTA_REDACAO', 
+sns.barplot(data=media_redacao_mae, x='Escolaridade_Mae', y='Nota_Redacao', 
             ax=ax2, palette='Oranges_d', order=ordem_escolaridade)
 ax2.set_title('Média de Redação por Escolaridade da Mãe', pad=20)
 ax2.set_xlabel('Nível de Escolaridade', labelpad=10)
@@ -531,8 +531,8 @@ st.pyplot(fig)
 dados_validos_pai = media_redacao_pai[media_redacao_pai['Escolaridade_Pai'] != 'Não sabe']
 dados_validos_mae = media_redacao_mae[media_redacao_mae['Escolaridade_Mae'] != 'Não sabe']
 
-diferenca_pai = dados_validos_pai['NU_NOTA_REDACAO'].max() - dados_validos_pai['NU_NOTA_REDACAO'].min()
-diferenca_mae = dados_validos_mae['NU_NOTA_REDACAO'].max() - dados_validos_mae['NU_NOTA_REDACAO'].min()
+diferenca_pai = dados_validos_pai['Nota_Redacao'].max() - dados_validos_pai['Nota_Redacao'].min()
+diferenca_mae = dados_validos_mae['Nota_Redacao'].max() - dados_validos_mae['Nota_Redacao'].min()
 
 st.markdown(f"""
 **Principais achados:**
@@ -550,9 +550,9 @@ st.markdown(f"""
 
 # Análise adicional: Comparação direta pai vs mãe
 fig2, ax = plt.subplots(figsize=(12, 6))
-sns.lineplot(data=media_redacao_pai, x=range(len(ordem_escolaridade)), y='NU_NOTA_REDACAO', 
+sns.lineplot(data=media_redacao_pai, x=range(len(ordem_escolaridade)), y='Nota_Redacao', 
              marker='o', label='Pai', color='blue')
-sns.lineplot(data=media_redacao_mae, x=range(len(ordem_escolaridade)), y='NU_NOTA_REDACAO', 
+sns.lineplot(data=media_redacao_mae, x=range(len(ordem_escolaridade)), y='Nota_Redacao', 
              marker='o', label='Mãe', color='orange')
 plt.xticks(range(len(ordem_escolaridade)), ordem_escolaridade, rotation=55)
 plt.title('Comparação Direta: Impacto da Escolaridade dos Pais na Redação')
