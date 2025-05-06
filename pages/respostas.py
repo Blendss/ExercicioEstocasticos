@@ -58,11 +58,13 @@ with st.expander("ℹ️ Sobre os Códigos das Variáveis"):
 
 
 # =============================================
-# Q1: Maior média em Matemática: MG
+# Q1: Maior média em Matemática
 # =============================================
-st.header("Q1: Maior média em Matemática: MG")
-
 media_mt_uf = df.groupby('UF_Escola')['Nota_Matematica'].mean().sort_values(ascending=False).reset_index()
+maior_media_mt_uf = media_mt_uf.iloc[0]['UF_Escola']
+maior_media_mt_valor = media_mt_uf.iloc[0]['Nota_Matematica']
+
+st.header(f"Q1: Maior média em Matemática: {maior_media_mt_uf}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_mt_uf, x='UF_Escola', y='Nota_Matematica', palette='viridis')
@@ -71,15 +73,17 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com maior média em Matemática é {media_mt_uf.iloc[0]['UF_Escola']} com {media_mt_uf.iloc[0]['Nota_Matematica']:.2f} pontos.
+**Resposta confirmada:** O estado com maior média em Matemática é {maior_media_mt_uf} com {maior_media_mt_valor:.2f} pontos.
 """)
 
 # =============================================
-# Q2: Menor média em Redação: AM
+# Q2: Menor média em Redação
 # =============================================
-st.header("Q2: Menor média em Redação: AM")
-
 media_redacao_uf = df.groupby('UF_Escola')['Nota_Redacao'].mean().sort_values().reset_index()
+menor_media_redacao_uf = media_redacao_uf.iloc[0]['UF_Escola']
+menor_media_redacao_valor = media_redacao_uf.iloc[0]['Nota_Redacao']
+
+st.header(f"Q2: Menor média em Redação: {menor_media_redacao_uf}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_redacao_uf, x='UF_Escola', y='Nota_Redacao', palette='viridis')
@@ -88,15 +92,17 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O estado com menor média em Redação é {media_redacao_uf.iloc[0]['UF_Escola']} com {media_redacao_uf.iloc[0]['Nota_Redacao']:.2f} pontos.
+**Resposta confirmada:** O estado com menor média em Redação é {menor_media_redacao_uf} com {menor_media_redacao_valor:.2f} pontos.
 """)
 
 # =============================================
-# Q3: Sexo com maior média em Linguagens: Masculino
+# Q3: Sexo com maior média em Linguagens
 # =============================================
-st.header("Q3: Sexo com maior média em Linguagens: Masculino")
-
 media_lc_sexo = df.groupby('Sexo')['Nota_Linguagens'].mean().sort_values(ascending=False).reset_index()
+sexo_maior_media_lc = media_lc_sexo.iloc[0]['Sexo']
+maior_media_lc_valor = media_lc_sexo.iloc[0]['Nota_Linguagens']
+
+st.header(f"Q3: Sexo com maior média em Linguagens: {sexo_maior_media_lc}")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_lc_sexo, x='Sexo', y='Nota_Linguagens', palette='coolwarm')
@@ -104,15 +110,17 @@ plt.title('Média de Linguagens por Sexo')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O sexo com maior média em Linguagens é {media_lc_sexo.iloc[0]['Sexo']} com {media_lc_sexo.iloc[0]['Nota_Linguagens']:.2f} pontos.
+**Resposta confirmada:** O sexo com maior média em Linguagens é {sexo_maior_media_lc} com {maior_media_lc_valor:.2f} pontos.
 """)
 
 # =============================================
-# Q4: Renda com maior média em CN: Mais de R$ 19.080,00
+# Q4: Renda com maior média em CN
 # =============================================
-st.header("Q4: Renda com maior média em CN: Mais de R$ 19.080,00")
-
 media_cn_renda = df.groupby('Renda_Familiar')['Nota_Ciencias_Natureza'].mean().sort_values(ascending=False).reset_index()
+renda_maior_media_cn = media_cn_renda.iloc[0]['Renda_Familiar']
+maior_media_cn_valor = media_cn_renda.iloc[0]['Nota_Ciencias_Natureza']
+
+st.header(f"Q4: Renda com maior média em CN: {renda_maior_media_cn}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=media_cn_renda, x='Renda_Familiar', y='Nota_Ciencias_Natureza', palette='viridis')
@@ -121,16 +129,19 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa de renda com maior média em Ciências da Natureza é '{media_cn_renda.iloc[0]['Renda_Familiar']}'.
+**Resposta confirmada:** A faixa de renda com maior média em Ciências da Natureza é '{renda_maior_media_cn}' com {maior_media_cn_valor:.2f} pontos.
 """)
 
 # =============================================
 # Q5: Média Matemática (com/sem internet)
 # =============================================
-st.header("Q5: Média Matemática (com/sem internet)")
-
 media_mt_internet = df.groupby('Internet_Domicilio')['Nota_Matematica'].mean().reset_index()
 media_mt_internet['Internet_Domicilio'] = media_mt_internet['Internet_Domicilio'].map({'A': 'Sem internet', 'B': 'Com internet'})
+media_com_internet = media_mt_internet[media_mt_internet['Internet_Domicilio'] == 'Com internet']['Nota_Matematica'].values[0]
+media_sem_internet = media_mt_internet[media_mt_internet['Internet_Domicilio'] == 'Sem internet']['Nota_Matematica'].values[0]
+diferenca_internet = media_com_internet - media_sem_internet
+
+st.header("Q5: Média Matemática (com/sem internet)")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_mt_internet, x='Internet_Domicilio', y='Nota_Matematica', palette='Set2')
@@ -139,20 +150,23 @@ st.pyplot(fig)
 
 st.markdown(f"""
 **Resposta confirmada:** 
-- Com internet: {media_mt_internet[media_mt_internet['Internet_Domicilio'] == 'Com internet']['Nota_Matematica'].values[0]:.2f}
-- Sem internet: {media_mt_internet[media_mt_internet['Internet_Domicilio'] == 'Sem internet']['Nota_Matematica'].values[0]:.2f}
+- Com internet: {media_com_internet:.2f}
+- Sem internet: {media_sem_internet:.2f}
+- Diferença: {diferenca_internet:.2f} pontos
 """)
 
 # =============================================
-# Q6: Cor/Raça mais comum: Parda
+# Q6: Cor/Raça mais comum
 # =============================================
-st.header("Q6: Cor/Raça mais comum: Parda")
-
 cor_raca_counts = df['Cor_Raca'].value_counts().reset_index()
 cor_raca_counts.columns = ['Cor_Raca', 'Count']
 cor_raca_counts['Cor_Raca'] = cor_raca_counts['Cor_Raca'].map({
     0: 'Não declarado', 1: 'Branca', 2: 'Preta', 3: 'Parda', 4: 'Amarela', 5: 'Indígena'
 })
+cor_raca_mais_comum = cor_raca_counts.iloc[0]['Cor_Raca']
+count_cor_raca = cor_raca_counts.iloc[0]['Count']
+
+st.header(f"Q6: Cor/Raça mais comum: {cor_raca_mais_comum}")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=cor_raca_counts, x='Cor_Raca', y='Count', palette='Set3')
@@ -161,18 +175,20 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A cor/raça mais comum entre os participantes é '{cor_raca_counts.iloc[0]['Cor_Raca']}'.
+**Resposta confirmada:** A cor/raça mais comum entre os participantes é '{cor_raca_mais_comum}' com {count_cor_raca:,} participantes.
 """)
 
 # =============================================
-# Q7: Tipo escola com maior nota Redação: Somente privada (sem bolsa)
+# Q7: Tipo escola com maior nota Redação
 # =============================================
-st.header("Q7: Tipo escola com maior nota Redação: Somente privada (sem bolsa)")
-
 media_redacao_escola = df.groupby('TP_ESCOLA')['Nota_Redacao'].mean().sort_values(ascending=False).reset_index()
 media_redacao_escola['TP_ESCOLA'] = media_redacao_escola['TP_ESCOLA'].map({
     1: 'Não Respondeu', 2: 'Pública', 3: 'Exterior', 4: 'Privada'
 })
+tipo_escola_maior_redacao = media_redacao_escola.iloc[0]['TP_ESCOLA']
+media_maior_redacao = media_redacao_escola.iloc[0]['Nota_Redacao']
+
+st.header(f"Q7: Tipo escola com maior nota Redação: {tipo_escola_maior_redacao}")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_redacao_escola, x='TP_ESCOLA', y='Nota_Redacao', palette='Set2')
@@ -180,15 +196,12 @@ plt.title('Média de Redação por Tipo de Escola')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O tipo de escola com maior média em Redação é '{media_redacao_escola.iloc[0]['TP_ESCOLA']}'.
+**Resposta confirmada:** O tipo de escola com maior média em Redação é '{tipo_escola_maior_redacao}' com {media_maior_redacao:.2f} pontos.
 """)
 
 # =============================================
-# Q8: Faixa etária mais comum: 18 anos
+# Q8: Faixa etária mais comum
 # =============================================
-st.header("Q8: Faixa etária mais comum: 18 anos")
-
-# Mapeamento das faixas etárias
 faixa_etaria_map = {
     1: 'Menor de 17 anos',
     2: '17 anos',
@@ -215,6 +228,10 @@ faixa_etaria_map = {
 idade_counts = df['TP_FAIXA_ETARIA'].value_counts().reset_index()
 idade_counts.columns = ['Codigo_Faixa', 'Count']
 idade_counts['Faixa_Etaria'] = idade_counts['Codigo_Faixa'].map(faixa_etaria_map)
+faixa_etaria_mais_comum = idade_counts.iloc[0]['Faixa_Etaria']
+count_faixa_etaria = idade_counts.iloc[0]['Count']
+
+st.header(f"Q8: Faixa etária mais comum: {faixa_etaria_mais_comum}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=idade_counts.head(10), x='Faixa_Etaria', y='Count', palette='viridis')
@@ -223,19 +240,20 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária mais comum entre os participantes é '{idade_counts.iloc[0]['Faixa_Etaria']}'.
+**Resposta confirmada:** A faixa etária mais comum entre os participantes é '{faixa_etaria_mais_comum}' com {count_faixa_etaria:,} participantes.
 """)
 
-
 # =============================================
-# Q9: Cor/Raça com maior média CH: Branca
+# Q9: Cor/Raça com maior média CH
 # =============================================
-st.header("Q9: Cor/Raça com maior média CH: Branca")
-
 media_ch_raca = df.groupby('Cor_Raca')['Nota_Ciencias_Humanas'].mean().sort_values(ascending=False).reset_index()
 media_ch_raca['Cor_Raca'] = media_ch_raca['Cor_Raca'].map({
     0: 'Não declarado', 1: 'Branca', 2: 'Preta', 3: 'Parda', 4: 'Amarela', 5: 'Indígena'
 })
+cor_raca_maior_ch = media_ch_raca.iloc[0]['Cor_Raca']
+media_maior_ch = media_ch_raca.iloc[0]['Nota_Ciencias_Humanas']
+
+st.header(f"Q9: Cor/Raça com maior média CH: {cor_raca_maior_ch}")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=media_ch_raca, x='Cor_Raca', y='Nota_Ciencias_Humanas', palette='Set3')
@@ -244,15 +262,17 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A cor/raça com maior média em Ciências Humanas é '{media_ch_raca.iloc[0]['Cor_Raca']}'.
+**Resposta confirmada:** A cor/raça com maior média em Ciências Humanas é '{cor_raca_maior_ch}' com {media_maior_ch:.2f} pontos.
 """)
 
 # =============================================
-# Q10: Sexo com maior mediana em Redação: Feminino
+# Q10: Sexo com maior mediana em Redação
 # =============================================
-st.header("Q10: Sexo com maior mediana em Redação: Feminino")
-
 mediana_redacao_sexo = df.groupby('Sexo')['Nota_Redacao'].median().sort_values(ascending=False).reset_index()
+sexo_maior_mediana = mediana_redacao_sexo.iloc[0]['Sexo']
+maior_mediana_valor = mediana_redacao_sexo.iloc[0]['Nota_Redacao']
+
+st.header(f"Q10: Sexo com maior mediana em Redação: {sexo_maior_mediana}")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=mediana_redacao_sexo, x='Sexo', y='Nota_Redacao', palette='coolwarm')
@@ -260,35 +280,39 @@ plt.title('Mediana de Redação por Sexo')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O sexo com maior mediana em Redação é '{mediana_redacao_sexo.iloc[0]['Sexo']}'.
+**Resposta confirmada:** O sexo com maior mediana em Redação é '{sexo_maior_mediana}' com {maior_mediana_valor:.2f} pontos.
 """)
 
 # =============================================
-# Q11: Maior correlação: Ciências Humanas e Linguagens
+# Q11: Maior correlação entre notas
 # =============================================
-st.header("Q11: Maior correlação: Ciências Humanas e Linguagens")
-
 correlacoes = df[['Nota_Ciencias_Humanas', 'Nota_Linguagens', 'Nota_Matematica', 'Nota_Ciencias_Natureza', 'Nota_Redacao']].corr()
+max_corr = correlacoes.unstack().sort_values(ascending=False)
+max_corr = max_corr[max_corr < 1].head(1)
+materia1 = max_corr.index[0][0].replace("Nota_", "").replace("_", " ")
+materia2 = max_corr.index[0][1].replace("Nota_", "").replace("_", " ")
+valor_correlacao = max_corr.values[0]
+
+st.header(f"Q11: Maior correlação: {materia1} e {materia2}")
 
 fig, ax = plt.subplots(figsize=(10, 8))
 sns.heatmap(correlacoes, annot=True, cmap='coolwarm', center=0)
 plt.title('Matriz de Correlação entre as Notas')
 st.pyplot(fig)
 
-max_corr = correlacoes.unstack().sort_values(ascending=False)
-max_corr = max_corr[max_corr < 1].head(1)
-
 st.markdown(f"""
-**Resposta confirmada:** A maior correlação é entre {max_corr.index[0][0]} e {max_corr.index[0][1]} com {max_corr.values[0]:.3f}.
+**Resposta confirmada:** A maior correlação é entre {materia1} e {materia2} com {valor_correlacao:.3f}.
 """)
 
 # =============================================
-# Q12: Nota mais variável: Redação
+# Q12: Nota mais variável
 # =============================================
-st.header("Q12: Nota mais variável: Redação")
-
 desvios_padrao = df[['Nota_Ciencias_Humanas', 'Nota_Linguagens', 'Nota_Matematica', 'Nota_Ciencias_Natureza', 'Nota_Redacao']].std().sort_values(ascending=False).reset_index()
 desvios_padrao.columns = ['Matéria', 'Desvio_Padrão']
+materia_mais_variavel = desvios_padrao.iloc[0]['Matéria'].replace("Nota_", "").replace("_", " ")
+desvio_padrao_valor = desvios_padrao.iloc[0]['Desvio_Padrão']
+
+st.header(f"Q12: Nota mais variável: {materia_mais_variavel}")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=desvios_padrao, x='Matéria', y='Desvio_Padrão', palette='viridis')
@@ -297,17 +321,19 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A nota mais variável é '{desvios_padrao.iloc[0]['Matéria'].replace("Nota_", "").replace("_", " ")}' com desvio padrão de {desvios_padrao.iloc[0]['Desvio_Padrão']:.2f}.
+**Resposta confirmada:** A nota mais variável é '{materia_mais_variavel}' com desvio padrão de {desvio_padrao_valor:.2f}.
 """)
 
 # =============================================
 # Q13: Renda mais comum entre top 10% Matemática
 # =============================================
-st.header("Q13: Renda mais comum entre top 10% Matemática")
-
 top_10_mt = df.nlargest(int(len(df)*0.1), 'Nota_Matematica')
 renda_top10_counts = top_10_mt['Renda_Familiar'].value_counts().reset_index()
 renda_top10_counts.columns = ['Renda_Familiar', 'Count']
+renda_mais_comum_top10 = renda_top10_counts.iloc[0]['Renda_Familiar']
+count_renda_top10 = renda_top10_counts.iloc[0]['Count']
+
+st.header(f"Q13: Renda mais comum entre top 10% Matemática: {renda_mais_comum_top10}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
 sns.barplot(data=renda_top10_counts, x='Renda_Familiar', y='Count', palette='viridis')
@@ -316,40 +342,41 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A renda mais comum entre o top 10% em Matemática é '{renda_top10_counts.iloc[0]['Renda_Familiar']}'.
+**Resposta confirmada:** A renda mais comum entre o top 10% em Matemática é '{renda_mais_comum_top10}' com {count_renda_top10:,} participantes.
 """)
 
 # =============================================
-# Q14: % Mulheres com redação > 800: 3.05%
+# Q14: % Mulheres com redação > 800
 # =============================================
-st.header("Q14: % Mulheres com redação > 800: 3.05%")
-
 mulheres = df[df['Sexo'] == 'F']
 total_mulheres = len(mulheres)
 mulheres_redacao_800 = len(mulheres[mulheres['Nota_Redacao'] > 800])
-percentual = (mulheres_redacao_800 / total_mulheres) * 100
+percentual_mulheres_800 = (mulheres_redacao_800 / total_mulheres) * 100
+
+st.header(f"Q14: % Mulheres com redação > 800: {percentual_mulheres_800:.2f}%")
 
 fig, ax = plt.subplots(figsize=(8, 5))
-plt.pie([percentual, 100-percentual], labels=['> 800', '≤ 800'], autopct='%1.2f%%', colors=['#ff9999','#66b3ff'])
+plt.pie([percentual_mulheres_800, 100-percentual_mulheres_800], labels=['> 800', '≤ 800'], autopct='%1.2f%%', colors=['#ff9999','#66b3ff'])
 plt.title('Distribuição de Mulheres por Nota em Redação (>800)')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O percentual de mulheres com nota em Redação acima de 800 é {percentual:.2f}%.
+**Resposta confirmada:** O percentual de mulheres com nota em Redação acima de 800 é {percentual_mulheres_800:.2f}%.
 """)
 
 # =============================================
 # Q15: Estado com menor desempenho em Ciências da Natureza
 # =============================================
-st.header("Q15: Estado com menor desempenho médio em Ciências da Natureza")
-
-# Calcular a média de CN por estado
 media_cn_uf = df.groupby('UF_Escola')['Nota_Ciencias_Natureza'].mean().sort_values().reset_index()
-media_cn_uf.columns = ['UF_Escola', 'Media_CN']
+uf_menor_cn = media_cn_uf.iloc[0]['UF_Escola']
+media_menor_cn = media_cn_uf.iloc[0]['Nota_Ciencias_Natureza']
+media_nacional_cn = df['Nota_Ciencias_Natureza'].mean()
+
+st.header(f"Q15: Estado com menor desempenho em Ciências da Natureza: {uf_menor_cn}")
 
 fig, ax = plt.subplots(figsize=(12, 6))
-sns.barplot(data=media_cn_uf, x='UF_Escola', y='Media_CN', palette='viridis')
-plt.axhline(y=df['Nota_Ciencias_Natureza'].mean(), color='red', linestyle='--', label=f'Média Nacional: {df["Nota_Ciencias_Natureza"].mean():.1f}')
+sns.barplot(data=media_cn_uf, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
+plt.axhline(y=media_nacional_cn, color='red', linestyle='--', label=f'Média Nacional: {media_nacional_cn:.1f}')
 plt.title('Desempenho Médio em Ciências da Natureza por Estado')
 plt.xlabel('Estado')
 plt.ylabel('Média de Notas')
@@ -358,52 +385,21 @@ plt.legend()
 st.pyplot(fig)
 
 st.markdown(f"""
-**Análise:** O estado com menor desempenho médio em Ciências da Natureza é **{media_cn_uf.iloc[0]['UF_Escola']}** com média de {media_cn_uf.iloc[0]['Media_CN']:.1f} pontos, 
-enquanto a média nacional é de {df['Nota_Ciencias_Natureza'].mean():.1f} pontos.
-
-**Possíveis interpretações:**
-- Diferenças na qualidade do ensino de ciências entre estados
-- Disparidades regionais na formação de professores
-- Acesso desigual a recursos educacionais
-- Variações nos currículos estaduais
-""")
-
-# Adicionando uma análise complementar - Distribuição das notas por estado
-st.subheader("Distribuição das Notas de Ciências da Natureza por Estado")
-
-plt.figure(figsize=(12, 6))
-sns.boxplot(data=df, x='UF_Escola', y='Nota_Ciencias_Natureza', palette='viridis')
-plt.xticks(rotation=45)
-plt.title('Distribuição das Notas de Ciências da Natureza por Estado')
-plt.xlabel('Estado')
-plt.ylabel('Nota CN')
-st.pyplot(plt.gcf())
-plt.clf()
-
-st.markdown("""
-**Análise complementar:** O boxplot mostra a distribuição completa das notas por estado, permitindo visualizar:
-- A mediana (linha central)
-- Dispersão das notas (tamanho da caixa)
-- Valores atípicos (pontos acima/baixo dos bigodes)
+**Resposta confirmada:** O estado com menor desempenho médio em Ciências da Natureza é **{uf_menor_cn}** com média de {media_menor_cn:.1f} pontos, 
+enquanto a média nacional é de {media_nacional_cn:.1f} pontos.
 """)
 
 # =============================================
-# Q16: Idade média top 10% Matemática: 4.3
+# Q16: Faixa etária mais comum top 10% Matemática
 # =============================================
-st.header("Q16: Idade média top 10% Matemática")
-
-# Primeiro vamos calcular a idade média do top 10% em Matemática
 top_10_mt = df.nlargest(int(len(df)*0.1), 'Nota_Matematica')
-
-# Criar uma coluna com a descrição da faixa etária
 top_10_mt['Faixa_Etaria_Desc'] = top_10_mt['TP_FAIXA_ETARIA'].map(faixa_etaria_map)
-
-# Calcular a moda (faixa etária mais comum)
-moda_faixa = top_10_mt['Faixa_Etaria_Desc'].mode()[0]
-
-# Contagem por faixa etária
 faixa_counts = top_10_mt['Faixa_Etaria_Desc'].value_counts().reset_index()
 faixa_counts.columns = ['Faixa_Etaria', 'Count']
+faixa_mais_comum_top10 = faixa_counts.iloc[0]['Faixa_Etaria']
+count_faixa_top10 = faixa_counts.iloc[0]['Count']
+
+st.header(f"Q16: Faixa etária mais comum top 10% Matemática: {faixa_mais_comum_top10}")
 
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=faixa_counts, x='Faixa_Etaria', y='Count', palette='viridis', order=faixa_counts['Faixa_Etaria'])
@@ -412,16 +408,16 @@ plt.xticks(rotation=45)
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A faixa etária mais comum no top 10% em Matemática é '{moda_faixa}'.
+**Resposta confirmada:** A faixa etária mais comum no top 10% em Matemática é '{faixa_mais_comum_top10}' com {count_faixa_top10:,} participantes.
 """)
 
 # =============================================
-# Q17: Diferença média nota MT por sexo: 41.86
+# Q17: Diferença média nota MT por sexo
 # =============================================
-st.header("Q17: Diferença média nota MT por sexo: 41.86")
-
 media_mt_sexo = df.groupby('Sexo')['Nota_Matematica'].mean().reset_index()
-diferenca = abs(media_mt_sexo.iloc[0]['Nota_Matematica'] - media_mt_sexo.iloc[1]['Nota_Matematica'])
+diferenca_mt_sexo = abs(media_mt_sexo.iloc[0]['Nota_Matematica'] - media_mt_sexo.iloc[1]['Nota_Matematica'])
+
+st.header(f"Q17: Diferença média nota MT por sexo: {diferenca_mt_sexo:.2f}")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_mt_sexo, x='Sexo', y='Nota_Matematica', palette='coolwarm')
@@ -429,17 +425,19 @@ plt.title('Média de Matemática por Sexo')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** A diferença de média em Matemática entre sexos é de {diferenca:.2f} pontos.
+**Resposta confirmada:** A diferença de média em Matemática entre sexos é de {diferenca_mt_sexo:.2f} pontos.
 """)
 
 # =============================================
 # Q18: Nota média Redação por internet
 # =============================================
-st.header("Q18: Nota média Redação por internet")
-
 media_redacao_internet = df.groupby('Internet_Domicilio')['Nota_Redacao'].mean().reset_index()
 media_redacao_internet['Internet_Domicilio'] = media_redacao_internet['Internet_Domicilio'].map({'A': 'Sem internet', 'B': 'Com internet'})
-diferenca = abs(media_redacao_internet.iloc[0]['Nota_Redacao'] - media_redacao_internet.iloc[1]['Nota_Redacao'])
+media_com_internet_red = media_redacao_internet[media_redacao_internet['Internet_Domicilio'] == 'Com internet']['Nota_Redacao'].values[0]
+media_sem_internet_red = media_redacao_internet[media_redacao_internet['Internet_Domicilio'] == 'Sem internet']['Nota_Redacao'].values[0]
+diferenca_internet_red = media_com_internet_red - media_sem_internet_red
+
+st.header("Q18: Nota média Redação por internet")
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.barplot(data=media_redacao_internet, x='Internet_Domicilio', y='Nota_Redacao', palette='Set2')
@@ -448,27 +446,27 @@ st.pyplot(fig)
 
 st.markdown(f"""
 **Resposta confirmada:** 
-- Com internet: {media_redacao_internet[media_redacao_internet['Internet_Domicilio'] == 'Com internet']['Nota_Redacao'].values[0]:.2f}
-- Sem internet: {media_redacao_internet[media_redacao_internet['Internet_Domicilio'] == 'Sem internet']['Nota_Redacao'].values[0]:.2f}
-- Diferença: {diferenca:.2f}
+- Com internet: {media_com_internet_red:.2f}
+- Sem internet: {media_sem_internet_red:.2f}
+- Diferença: {diferenca_internet_red:.2f} pontos
 """)
 
 # =============================================
-# Q19: % Escola pública: 76.33%
+# Q19: % Escola pública
 # =============================================
-st.header("Q19: % Escola pública: 76.33%")
-
 total = len(df)
 escola_publica = len(df[df['TP_ESCOLA'] == 2])
-percentual = (escola_publica / total) * 100
+percentual_publica = (escola_publica / total) * 100
+
+st.header(f"Q19: % Escola pública: {percentual_publica:.2f}%")
 
 fig, ax = plt.subplots(figsize=(8, 5))
-plt.pie([percentual, 100-percentual], labels=['Pública', 'Outras'], autopct='%1.2f%%', colors=['#66b3ff','#ff9999'])
+plt.pie([percentual_publica, 100-percentual_publica], labels=['Pública', 'Outras'], autopct='%1.2f%%', colors=['#66b3ff','#ff9999'])
 plt.title('Proporção de Alunos de Escola Pública')
 st.pyplot(fig)
 
 st.markdown(f"""
-**Resposta confirmada:** O percentual de alunos de escola pública é {percentual:.2f}%.
+**Resposta confirmada:** O percentual de alunos de escola pública é {percentual_publica:.2f}%.
 """)
 
 # =============================================
