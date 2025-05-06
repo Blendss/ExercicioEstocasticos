@@ -74,10 +74,7 @@ Total de linhas na amostra: 660554
 Fração usada: 0.1696
 """)
 
-import streamlit as st
 
-# Configuração inicial
-st.set_page_config(layout="wide")
 st.title("📚 Conclusão: Análise Estatística dos Microdados do ENEM 2018")
 
 # Introdução
